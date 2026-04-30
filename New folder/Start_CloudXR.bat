@@ -1,6 +1,6 @@
 @echo off
 echo Setting OpenXR Runtime to NVIDIA CloudXR...
-set XR_RUNTIME_JSON=C:\Users\jan_armin_steinhauer\Downloads\Stream-Manager-6.0.4-win64 - Copy\Server\releases\6.0.5\openxr_cloudxr.json
+set "XR_RUNTIME_JSON=C:\\Users\\jan_armin_steinhauer\\Downloads\\Stream-Manager-6.0.4-win64 - Copy\\Server\\releases\\6.0.5\\openxr_cloudxr.json"
 
 echo Starting Unity Game...
 start "" "CloudXRStreamingTest.exe"
