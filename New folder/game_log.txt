@@ -1,0 +1,201 @@
+Mono path[0] = 'C:/New folder/CloudXRStreamingTest_Data/Managed'
+Mono config path = 'C:/New folder/MonoBleedingEdge/etc'
+CodeReloadManager initialized
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Initialize engine version: 6000.4.3f1 (39d1a88d4dd1)
+[Subsystems] Discovering subsystems at path C:/New folder/CloudXRStreamingTest_Data/UnitySubsystems
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+[Subsystems] 1 'inputs' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] 1 'displays' descriptors matched in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  meshings in UnitySubsystems/UnityOpenXR/UnitySubsystemsManifest.json.
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/libUnityARFoundationAndroidXR/UnitySubsystemsManifest.json.
+[Subsystems] No descriptors matched for  inputs in UnitySubsystems/libUnityARFoundationAndroidXR/UnitySubsystemsManifest.json.
+[Subsystems] No descriptors matched for  displays in UnitySubsystems/libUnityARFoundationAndroidXR/UnitySubsystemsManifest.json.
+[Subsystems] 1 'meshings' descriptors matched in UnitySubsystems/libUnityARFoundationAndroidXR/UnitySubsystemsManifest.json
+[Subsystems] No descriptors matched for  examples in UnitySubsystems/libUnityARFoundationMeta/UnitySubsystemsManifest.json.
+[Subsystems] No descriptors matched for  inputs in UnitySubsystems/libUnityARFoundationMeta/UnitySubsystemsManifest.json.
+[Subsystems] No descriptors matched for  displays in UnitySubsystems/libUnityARFoundationMeta/UnitySubsystemsManifest.json.
+[Subsystems] 1 'meshings' descriptors matched in UnitySubsystems/libUnityARFoundationMeta/UnitySubsystemsManifest.json
+[D3D12 Device Filter] Vendor Name: NVIDIA
+[D3D12 Device Filter] Device Name: NVIDIA Tesla T4
+[D3D12 Device Filter] Driver Version: 31.0.15.5161
+[D3D12 Device Filter] Feature Level: 12.2
+[D3D12 Device Filter] Graphics Memory: 15081 MB
+[D3D12 Device Filter] Processor Count: 4
+[D3D12 Device Filter] Device Type: Discrete
+[D3D12 Device Filter] D3D12 API denied by user filter: {"Processor Count Comparator": Less Than Or Equal To"Processor Count": "4", "Device Type:": Do Not Care}
+GfxDevice: creating device client; kGfxThreadingModeClientWorkerJobs
+[XR] [7420] [15:19:05.343][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:05.343][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:05.343][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:05.343][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:05.343][Info   ] Available Layers: (0)
+[XR] [7420] [15:19:05.343][Error  ] xrCreateInstance: XR_ERROR_RUNTIME_UNAVAILABLE
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA Tesla T4 (ID=0x1eb8)
+    Vendor:   NVIDIA
+    VRAM:     15081 MB
+    Driver:   31.0.15.5161
+FMOD failed to initialize any audio devices, running on emulated software output with no sound. Please check your audio drivers and/or hardware for malfunction.
+Begin MonoManager ReloadAssembly
+- Finished resetting the current domain, in  0.005 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.ARPlaneFeature?) has a different serialization layout when loading. (Read 60 bytes but expected 368 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.BoundaryVisibilityFeature?) has a different serialization layout when loading. (Read 68 bytes but expected 252 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.ARCameraFeature?) has a different serialization layout when loading. (Read 60 bytes but expected 240 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.AROcclusionFeature?) has a different serialization layout when loading. (Read 64 bytes but expected 240 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.ARBoundingBoxFeature?) has a different serialization layout when loading. (Read 64 bytes but expected 316 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.ARRaycastFeature?) has a different serialization layout when loading. (Read 60 bytes but expected 244 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.OpenXRLifeCycleFeature?) has a different serialization layout when loading. (Read 68 bytes but expected 164 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.ColocationDiscoveryFeature?) has a different serialization layout when loading. (Read 72 bytes but expected 252 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.ARSessionFeature?) has a different serialization layout when loading. (Read 60 bytes but expected 220 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.ARAnchorFeature?) has a different serialization layout when loading. (Read 60 bytes but expected 384 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.DisplayUtilitiesFeature?) has a different serialization layout when loading. (Read 68 bytes but expected 244 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+The referenced script (Unknown) on this Behaviour is missing!
+The referenced script on this Behaviour (Game Object '<null>') is missing!
+A scripted object (probably UnityEngine.XR.OpenXR.Features.Meta.ARMeshFeature?) has a different serialization layout when loading. (Read 56 bytes but expected 288 bytes)
+Did you #if UNITY_EDITOR a section of your serialized properties in any of your scripts?
+XRGeneral Settings awakening...
+[XR] Time interace not found - delta time prediction disabled.
+[Subsystems] OpenXR XR Plugin successfully registered Provider for OpenXR Display
+[Subsystems] OpenXR XR Plugin successfully registered Provider for OpenXR Input
+[Subsystems] OpenXR XR Plugin successfully registered Provider for OpenXR Display
+Loading OpenXR loader library at path: openxr_loader
+[XR] [7420] [15:19:06.220][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.221][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.221][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.221][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.221][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.221][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.221][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.221][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.222][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[Subsystems] Loading plugin UnityOpenXR for subsystem OpenXR Display...
+[XR] [7420] [15:19:06.241][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.241][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.241][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.241][Error  ] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE
+[XR] [7420] [15:19:06.241][Info   ] Available Layers: (0)
+[XR] [7420] [15:19:06.241][Error  ] xrCreateInstance: XR_ERROR_RUNTIME_UNAVAILABLE
+[Subsystems] Failed to initialize subsystem OpenXR Display [error: 1]
+[XR] [7420] [15:19:06.244][Error  ] xrPollEvent: XR_ERROR_FUNCTION_UNSUPPORTED
+[XR] [7420] [15:19:06.245][Info   ] 
+
+==== Start Unity OpenXR Diagnostic Report ====
+
+
+[XR] [7420] [15:19:06.245][Info   ] ==== Report Reason: System Shutdown ====
+
+
+[XR] [7420] [15:19:06.245][Info   ] ==== OpenXR Settings ====
+[XR] [7420] [15:19:06.245][Info   ] 
+[XR] [7420] [15:19:06.245][Info   ] Symmetric Projection: False
+[XR] [7420] [15:19:06.245][Info   ] Stereo Rendering Mode: SinglePassInstanced
+[XR] [7420] [15:19:06.245][Info   ] Latency Optimization: PrioritizeRendering
+[XR] [7420] [15:19:06.245][Info   ] Color Submission Modes: kRenderTextureFormatGroup8888
+[XR] [7420] [15:19:06.245][Info   ] Depth Submission Mode: None
+[XR] [7420] [15:19:06.245][Info   ] Space Warp Motion Vector Texture Format: RGBA16f
+[XR] [7420] [15:19:06.245][Info   ] Optimize Buffer Discards: False
+[XR] [7420] [15:19:06.245][Info   ] Multiview Render Regions Optimization Mode: None
+[XR] [7420] [15:19:06.245][Info   ] Use OpenXR Predicted Time: False
+[XR] [7420] [15:19:06.245][Info   ] Foveated Rendering API: Legacy
+[XR] [7420] [15:19:06.245][Info   ] 
+[XR] [7420] [15:19:06.245][Info   ] ==== OpenXR Provider Info ====
+[XR] [7420] [15:19:06.245][Info   ] 
+[XR] [7420] [15:19:06.245][Info   ] Provider Version: 1.16.0-18-gc7a9defb
+[XR] [7420] [15:19:06.245][Info   ] App: CloudXRStreamingTest #3118937138
+[XR] [7420] [15:19:06.245][Info   ] Engine: 6000.4.3f1 #88093697
+[XR] [7420] [15:19:06.245][Info   ] 
+[XR] [7420] [15:19:06.245][Info   ] ==== OpenXR Runtime Info ====
+[XR] [7420] [15:19:06.245][Info   ] 
+[XR] [7420] [15:19:06.245][Info   ] Available Layers: (0)
+[XR] [7420] [15:19:06.245][Info   ] 
+[XR] [7420] [15:19:06.245][Info   ] ==== Last 20 non-XR_SUCCESS returns ====
+[XR] [7420] [15:19:06.245][Info   ] [FAILURE] xrEnumerateInstanceExtensionProperties: XR_ERROR_RUNTIME_UNAVAILABLE (13x)
+[XR] [7420] [15:19:06.245][Info   ] [FAILURE] xrCreateInstance: XR_ERROR_RUNTIME_UNAVAILABLE (1x)
+[XR] [7420] [15:19:06.245][Info   ] [FAILURE] xrPollEvent: XR_ERROR_FUNCTION_UNSUPPORTED (1x)
+[XR] [7420] [15:19:06.245][Info   ] 
+[XR] [7420] [15:19:06.245][Info   ] ==== Last 20 Events ====
+[XR] [7420] [15:19:06.245][Info   ] 
+
+==== End Unity OpenXR Diagnostic Report ====
+
+
+Cannot create camera background material compatible with the render pipeline
+<RI> Initializing input.
+Using Windows.Gaming.Input
+UnloadTime: 1.177400 ms
+[Subsystems] OpenXR XR Plugin successfully registered Provider for OpenXR Input
+[Subsystems] OpenXR XR Plugin successfully registered Provider for OpenXR Display
+[Subsystems] OpenXR XR Plugin successfully registered Provider for OpenXR Input
+[Subsystems] OpenXR XR Plugin successfully registered Provider for OpenXR Display
+No active UnityEngine.XR.XRInputSubsystem is available. Please ensure that a valid loader configuration exists in the XR project settings.
+ArgumentNullException: Value cannot be null.
+Parameter name: shader
+  at UnityEngine.Bindings.ThrowHelper.ThrowArgumentNullException (System.Object obj, System.String parameterName) [0x00011] in <d8eef364da974c2b86bfe8e991202ec5>:0 
+  at UnityEngine.Material.CreateWithShader (UnityEngine.Material self, UnityEngine.Shader shader) [0x00003] in <d8eef364da974c2b86bfe8e991202ec5>:0 
+  at UnityEngine.Material..ctor (UnityEngine.Shader shader) [0x00006] in <d8eef364da974c2b86bfe8e991202ec5>:0 
+  at UnityEngine.XR.Simulation.CameraTextureProvider.Awake () [0x00017] in <1afcf761d85246e6be2eb1849991be9e>:0 
+UnityEngine.GameObject:Internal_AddComponentWithType_Injected(IntPtr, Type)
+UnityEngine.GameObject:Internal_AddComponentWithType(Type)
+UnityEngine.GameObject:AddComponent(Type)
+UnityEngine.GameObject:AddComponent()
+UnityEngine.XR.Simulation.CameraTextureProvider:AddTextureProviderToCamera(Camera, Camera)
+UnityEngine.XR.Simulation.SimulationProvider:Start()
+UnityEngine.SubsystemsImplementation.SubsystemWithProvider`3:OnStart()
+UnityEngine.SubsystemsImplementation.SubsystemWithProvider:Start()
+UnityEngine.XR.ARFoundation.SubsystemLifecycleManager`3:TryStartSubsystem()
+UnityEngine.XR.ARFoundation.<FindAndStartSubsystemAsync>d__11:MoveNext()
+System.Runtime.CompilerServices.AsyncVoidMethodBuilder:Start(<FindAndStartSubsystemAsync>d__11&)
+UnityEngine.XR.ARFoundation.SubsystemLifecycleManager`3:FindAndStartSubsystemAsync()
+UnityEngine.XR.ARFoundation.SubsystemLifecycleManager`3:OnEnable()
+
+Current XR Platform: Other
+Hand Tracking Subsystem not found or not running, can't subscribe to hand tracking status. Enable that feature in the OpenXR project settings and ensure OpenXR is enabled as the plug-in provider. This component will reattempt getting a reference to the subsystem each frame.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+CodeReloadManager destroyed
