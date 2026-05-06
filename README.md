@@ -24,7 +24,7 @@ Because the server and client run on distinct operating systems, the setup is sp
          "file_format_version": "1.0.0",
          "runtime": {
            "name": "NVIDIA™ CloudXR™ Runtime (based on Monado™)",
-           "library_path": "C:\\Users\\jan_armin_steinhauer\\Downloads\\Stream-Manager-6.0.4-win64\\Server\\releases\\6.0.5\\openxr_cloudxr.dll"
+           "library_path": "C:\\MasterThesisJanSteinhauer\\ClaudeXR-Server-Apple-Vision-Pro\\Stream-Manager-6.0.4-win64 - Copy\\Server\\releases\\6.0.5\\openxr_cloudxr.dll"
          }
        }
        ```
@@ -35,7 +35,7 @@ Because the server and client run on distinct operating systems, the setup is sp
        ```bat
        @echo off
        echo Setting OpenXR Runtime to NVIDIA CloudXR...
-       set "XR_RUNTIME_JSON=C:\Users\jan_armin_steinhauer\Downloads\Stream-Manager-6.0.4-win64 - Copy\Server\releases\6.0.5\openxr_cloudxr.json"
+       set "XR_RUNTIME_JSON=C:\MasterThesisJanSteinhauer\ClaudeXR-Server-Apple-Vision-Pro\Stream-Manager-6.0.4-win64 - Copy\Server\releases\6.0.5\openxr_cloudxr.json"
        
        echo Starting Unity Game...
        start "" "CloudXRStreamingTest.exe"

@@ -1,0 +1,58 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Visual Studio / Rider / IDEs
+.vs/
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Unity generated directories and files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# Unity generated cache and temp files
+sysinfo.txt
+*.crash
+crash_info.txt
+
+# Unity 3D specific files
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# Logs
+*.log
+
+# C# / .NET specific
+bin/
+obj/
+
+# Temporary / Backup folders (matching your "Stream-Manager-6.0.4-win64 - Copy" style if desired)
+* - Copy/
+
+# Specific files you might not want to track
+# Uncomment if you don't want to track the large PDF
+# *.pdf
+
+# Unity IL2CPP build folders
+*_BackUpThisFolder_ButDontShipItWithYourGame/
+*_BurstDebugInformation_DoNotShip/
+GameAssembly.dll
+GameAssembly.pdb
