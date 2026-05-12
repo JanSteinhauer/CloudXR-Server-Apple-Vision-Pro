@@ -29,6 +29,7 @@ struct My_First_AVP_CloudXR_ClientApp: App {
         ImmersiveSpace(id: streamingSpaceTitle) {
             ImmersiveView()
         }
+        .immersionStyle(selection: .constant(.mixed), in: .mixed)
         .environment(cxrSession)
     }
 }

@@ -17,8 +17,9 @@ struct ContentView: View {
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
 
     // Configurable session settings.
-    @AppStorage("ipAddress") static var ipAddress: String = "34.118.75.2"
+    @AppStorage("ipAddress") static var ipAddress: String = ""
     @AppStorage("resolutionPreset") private var resolutionPreset: ResolutionPreset = .standardPreset
+    @AppStorage("enableHandTracking") private var enableHandTracking: Bool = true
 
     var body: some View {
         VStack {
@@ -39,6 +40,8 @@ struct ContentView: View {
                             )
                         }
                 }
+
+                Toggle("Enable Hand Tracking", isOn: $enableHandTracking)
             }
 
 //            Model3D(named: "Scene", bundle: realityKitContentBundle)
@@ -61,10 +64,10 @@ struct ContentView: View {
             Button("Connect") {
                             Task { @MainActor in
                                 var config = CloudXRKit.Config()
-                                
+
                                 config.connectionType = .localSecure(
-                                    ip: "34.158.227.20",
-                                    clientToken: "CLIENT_TOKEN",
+                                    ip: "192.168.137.1",
+                                    clientToken: "SBl2PlUXUDDRWtt90ZdlaHes0/41cWIJUzcCCzxfbDM",
                                     certificateValidationHandler: { challenge in
                                         // Automatically trust the self-signed cert from the VM
                                         if let trust = challenge.protectionSpace.serverTrust {
@@ -73,10 +76,18 @@ struct ContentView: View {
                                         return (.performDefaultHandling, nil)
                                     }
                                 )
-                                
+
                                 config.resolutionPreset = .standardPreset
+
+                                // Enable hand tracking for interaction
+                                #if targetEnvironment(simulator)
+                                config.handTrackingMode = enableHandTracking ? .simulated : .disabled
+                                #else
+                                config.handTrackingMode = enableHandTracking ? .prediction : .disabled
+                                #endif
+
                                 cxrSession.configure(config: config)
-                                
+
                                 // Connect!
                                 try await cxrSession.connect()
 
