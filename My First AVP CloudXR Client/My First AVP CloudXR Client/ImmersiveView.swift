@@ -21,6 +21,7 @@ struct ImmersiveView: View {
     @State private var sessionEntity = Entity()
     @State private var root = Entity()
     @State private var objectVisualizations: [UUID: ObjectAnchorVisualization] = [:]
+    @State private var spatialAnchorFirestore = SpatialAnchorFirestore()
 
     var body: some View {
         RealityView { content in
@@ -60,6 +61,12 @@ struct ImmersiveView: View {
                         let visualization = ObjectAnchorVisualization(for: anchor, withModel: model)
                         self.objectVisualizations[id] = visualization
                         root.addChild(visualization.entity)
+
+                        // Save spatial anchor to Firestore
+                        Task {
+                            await spatialAnchorFirestore.saveObjectAnchor(anchor)
+                        }
+
                     case .updated:
                         self.objectVisualizations[id]?.update(with: anchor)
                     case .removed:

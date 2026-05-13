@@ -148,6 +148,30 @@ final class FirestoreREST {
         return name
     }
 
+    // PATCH /documents/{collection}/{documentId} - with specific document ID
+    // Creates or updates a document with a specific ID
+    func createDocument(collection: String, documentId: String, fields: [String: FirestoreValue]) async throws {
+        let url = URL(string: "\(base)/\(collection)/\(documentId)?key=\(apiKey)")!
+        var req = URLRequest(url: url)
+        req.httpMethod = "PATCH"
+        req.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+
+        let body: [String: Any] = ["fields": encodeMap(fields)]
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (data, resp) = try await URLSession.shared.data(for: req)
+        guard let http = resp as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+
+        if !(200..<300).contains(http.statusCode) {
+            throw httpError(resp, data: data)
+        }
+    }
+
+    // Update a specific document by ID
+    func updateDocument(collection: String, documentId: String, fields: [String: FirestoreValue]) async throws {
+        try await createDocument(collection: collection, documentId: documentId, fields: fields)
+    }
+
     // GET /documents/{collectionId}
     // Lists documents in the specified collection
     func listDocuments(collection: String) async throws -> [DocEnvelope] {
