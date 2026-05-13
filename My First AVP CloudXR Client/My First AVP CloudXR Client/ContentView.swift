@@ -71,17 +71,26 @@ struct ContentView: View {
                             Task { @MainActor in
                                 var config = CloudXRKit.Config()
 
-                                config.connectionType = .localSecure(
-                                    ip: "192.168.137.1",
-                                    clientToken: EnvironmentConfig.shared.cloudXRClientToken,
-                                    certificateValidationHandler: { challenge in
-                                        // Automatically trust the self-signed cert from the VM
-                                        if let trust = challenge.protectionSpace.serverTrust {
-                                            return (.useCredential, URLCredential(trust: trust))
+                                // Get token if available, otherwise proceed without it
+                                let token = EnvironmentConfig.shared.cloudXRClientToken
+
+                                if !token.isEmpty {
+                                    config.connectionType = .localSecure(
+                                        ip: "192.168.137.1",
+                                        clientToken: token,
+                                        certificateValidationHandler: { challenge in
+                                            // Automatically trust the self-signed cert from the VM
+                                            if let trust = challenge.protectionSpace.serverTrust {
+                                                return (.useCredential, URLCredential(trust: trust))
+                                            }
+                                            return (.performDefaultHandling, nil)
                                         }
-                                        return (.performDefaultHandling, nil)
-                                    }
-                                )
+                                    )
+                                } else {
+                                    // Fallback to basic local connection without token
+                                    config.connectionType = .local(ip: "192.168.137.1")
+                                    print("⚠️ Using local connection without secure token")
+                                }
 
                                 config.resolutionPreset = .standardPreset
 
@@ -191,6 +200,14 @@ struct ContentView: View {
         defer { isLoadingAnchors = false }
 
         let (projectId, apiKey) = EnvironmentConfig.firebase
+
+        // Check if Firebase is configured
+        if projectId.isEmpty || apiKey.isEmpty {
+            anchorsMessage = "Firebase not configured. Please add .env file with FIREBASE_PROJECT_ID and FIREBASE_API_KEY."
+            showAnchorsAlert = true
+            print("⚠️ [ContentView] Firebase credentials not available")
+            return
+        }
 
         let rest = FirestoreREST(
             projectId: projectId,

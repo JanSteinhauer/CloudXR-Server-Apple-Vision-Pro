@@ -18,24 +18,27 @@ struct EnvironmentConfig {
 
     // MARK: - Public Accessors
     var firebaseProjectId: String {
-        guard let value = config["FIREBASE_PROJECT_ID"], !value.isEmpty else {
-            fatalError("❌ FIREBASE_PROJECT_ID not found in .env file!")
+        if let value = config["FIREBASE_PROJECT_ID"], !value.isEmpty {
+            return value
         }
-        return value
+        print("⚠️ FIREBASE_PROJECT_ID not found in .env file, using empty default")
+        return ""
     }
 
     var firebaseApiKey: String {
-        guard let value = config["FIREBASE_API_KEY"], !value.isEmpty else {
-            fatalError("❌ FIREBASE_API_KEY not found in .env file!")
+        if let value = config["FIREBASE_API_KEY"], !value.isEmpty {
+            return value
         }
-        return value
+        print("⚠️ FIREBASE_API_KEY not found in .env file, using empty default")
+        return ""
     }
 
     var cloudXRClientToken: String {
-        guard let value = config["CLOUDXR_CLIENT_TOKEN"], !value.isEmpty else {
-            fatalError("❌ CLOUDXR_CLIENT_TOKEN not found in .env file!")
+        if let value = config["CLOUDXR_CLIENT_TOKEN"], !value.isEmpty {
+            return value
         }
-        return value
+        print("⚠️ CLOUDXR_CLIENT_TOKEN not found in .env file, using empty default")
+        return ""
     }
 
     // MARK: - Initialization
@@ -45,15 +48,18 @@ struct EnvironmentConfig {
 
     // MARK: - Private Methods
     private mutating func loadEnvironmentVariables() {
-        // Try to find .env file in project root (multiple possible locations)
+        // Try to find .env file in multiple locations
         let possiblePaths = [
-            // Project root (most common)
-            "/Users/I759164/Documents/University/Master Thesis/ClaudeXR-Server-Apple-Vision-Pro/.env",
-
-            // App bundle (if .env is included in the build)
+            // App bundle (when .env is included as a resource)
             Bundle.main.path(forResource: ".env", ofType: nil),
 
-            // Documents directory (for development)
+            // Same directory as the app on device
+            Bundle.main.bundlePath + "/.env",
+
+            // Project root (for simulator/development)
+            "/Users/I759164/Documents/University/Master Thesis/ClaudeXR-Server-Apple-Vision-Pro/.env",
+
+            // Documents directory
             FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?
                 .appendingPathComponent(".env").path
         ].compactMap { $0 }
@@ -66,7 +72,11 @@ struct EnvironmentConfig {
             }
         }
 
-        print("⚠️ [EnvironmentConfig] No .env file found, using fallback values")
+        print("⚠️ [EnvironmentConfig] No .env file found in any location")
+        print("   Searched paths:")
+        for path in possiblePaths {
+            print("   - \(path)")
+        }
     }
 
     private mutating func parseEnvironmentFile(_ contents: String) {
@@ -104,10 +114,14 @@ struct EnvironmentConfig {
     /// Print all loaded configuration (for debugging - careful with sensitive data!)
     func debugPrint() {
         print("=== Environment Configuration ===")
-        print("Loaded keys: \(config.keys.sorted())")
-        print("FIREBASE_PROJECT_ID: \(firebaseProjectId)")
-        print("FIREBASE_API_KEY: \(maskSecret(firebaseApiKey))")
-        print("CLOUDXR_CLIENT_TOKEN: \(maskSecret(cloudXRClientToken))")
+        if config.isEmpty {
+            print("⚠️ No .env file loaded - using defaults")
+        } else {
+            print("Loaded keys: \(config.keys.sorted())")
+        }
+        print("FIREBASE_PROJECT_ID: \(firebaseProjectId.isEmpty ? "<not set>" : firebaseProjectId)")
+        print("FIREBASE_API_KEY: \(firebaseApiKey.isEmpty ? "<not set>" : maskSecret(firebaseApiKey))")
+        print("CLOUDXR_CLIENT_TOKEN: \(cloudXRClientToken.isEmpty ? "<not set>" : maskSecret(cloudXRClientToken))")
         print("=================================")
     }
 
