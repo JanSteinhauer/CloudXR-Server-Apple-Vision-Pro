@@ -1,0 +1,230 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    Firebase Integration Architecture                        ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           Apple Vision Pro App                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
+│  │                          QueryView.swift                              │  │
+│  │  ┌──────────────────────────────────────────────────────────────┐   │  │
+│  │  │  [Text Input Field]                        [Send Button 📤]   │   │  │
+│  │  └──────────────────────────────────────────────────────────────┘   │  │
+│  │  ┌──────────────────────────────────────────────────────────────┐   │  │
+│  │  │  Query History:                                               │   │  │
+│  │  │  • Query 1 [Status: completed ✅] Response: "..."            │   │  │
+│  │  │  • Query 2 [Status: processing ⏳]                            │   │  │
+│  │  │  • Query 3 [Status: pending 🕐]                               │   │  │
+│  │  └──────────────────────────────────────────────────────────────┘   │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                   ▲                                          │
+│                                   │ @EnvironmentObject                       │
+│                                   ▼                                          │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
+│  │                   CloudXRQueryService.swift                           │  │
+│  │                                                                        │  │
+│  │  @Published var queries: [Query]                                      │  │
+│  │  • sendQuery(text) -> String                                          │  │
+│  │  • fetchQueries()                                                     │  │
+│  │  • Auto-polling every 2 seconds ⏰                                    │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                   ▲                                          │
+│                                   │ Uses                                     │
+│                                   ▼                                          │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
+│  │                      FirestoreREST.swift                              │  │
+│  │                                                                        │  │
+│  │  • getDocument() -> JSON                                              │  │
+│  │  • patchDocument(fields) ✏️                                           │  │
+│  │  • createDocument(collection, fields) ➕                              │  │
+│  │  • listDocuments(collection) -> [Doc] 📋                             │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                   ▲                                          │
+└───────────────────────────────────┼──────────────────────────────────────────┘
+                                    │
+                        HTTPS REST API Calls 🌐
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      Firebase Firestore Cloud Database                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Project: jansteinhauermasterthesis                                          │
+│                                                                              │
+│  databases/                                                                  │
+│  └── (default)/                                                              │
+│      └── documents/                                                          │
+│          ├── cloudxr/                                                        │
+│          │   └── session                                                     │
+│          │       ├── connected: true                                         │
+│          │       ├── lastUpdate: 2026-05-13T12:00:00Z                       │
+│          │       └── handTrackingEnabled: true                               │
+│          │                                                                    │
+│          └── cloudxr_queries/  [Collection] 📚                              │
+│              ├── {queryId1}                                                  │
+│              │   ├── query: "What is CloudXR status?"                        │
+│              │   ├── timestamp: 2026-05-13T11:30:00Z                        │
+│              │   ├── status: "completed" ✅                                 │
+│              │   └── response: "Connected and streaming"                     │
+│              │                                                                │
+│              ├── {queryId2}                                                  │
+│              │   ├── query: "Enable hand tracking"                           │
+│              │   ├── timestamp: 2026-05-13T11:45:00Z                        │
+│              │   ├── status: "processing" ⏳                                │
+│              │   └── response: null                                          │
+│              │                                                                │
+│              └── {queryId3}                                                  │
+│                  ├── query: "Get frame rate"                                 │
+│                  ├── timestamp: 2026-05-13T12:00:00Z                        │
+│                  ├── status: "pending" 🕐                                   │
+│                  └── response: null                                          │
+│                                                                              │
+└───────────────────────────────────┬──────────────────────────────────────────┘
+                                    │
+                          Realtime Updates 🔄
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         Backend Service (Optional)                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Python / Node.js / Any Language                                             │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  Listen for new queries (status: "pending")                         │    │
+│  │  ↓                                                                   │    │
+│  │  Update status to "processing"                                      │    │
+│  │  ↓                                                                   │    │
+│  │  Process query (LLM, Database, API call, etc.)                      │    │
+│  │  ↓                                                                   │    │
+│  │  Update with response + status: "completed"                         │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                              Data Flow                                      ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+1. User Input:
+   User types query in Vision Pro app → Taps send button
+
+2. Send Query:
+   QueryView → CloudXRQueryService.sendQuery()
+   → FirestoreREST.createDocument()
+   → HTTPS POST to Firebase
+   → New document created in cloudxr_queries collection
+
+3. Backend Processing:
+   Backend listens to Firestore
+   → Detects new query (status: "pending")
+   → Processes query (calls LLM/API/etc)
+   → Updates document with response (status: "completed")
+
+4. Receive Response:
+   CloudXRQueryService polls every 2 seconds
+   → FirestoreREST.listDocuments()
+   → HTTPS GET from Firebase
+   → Updates @Published var queries
+   → SwiftUI automatically refreshes UI
+   → User sees response in app! 🎉
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                          Query Lifecycle                                    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+pending 🕐      Created in Firebase, waiting for backend
+    ↓
+processing ⏳   Backend picked it up, working on it
+    ↓
+completed ✅    Response ready, displayed to user
+    or
+failed ❌      Error occurred during processing
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                          File Relationships                                 ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+My_First_AVP_CloudXR_ClientApp.swift
+├── Creates CloudXRQueryService instance
+├── Provides as @EnvironmentObject
+└── Defines "queries" window
+
+ContentView.swift
+├── Has "Open Firebase Queries" button
+└── Opens QueryView window
+
+QueryView.swift
+├── Uses @EnvironmentObject CloudXRQueryService
+├── Sends queries
+└── Displays query history
+
+CloudXRQueryService.swift
+├── Uses FirestoreREST internally
+├── Manages query state
+├── Polls for updates
+└── @Published properties for SwiftUI
+
+FirestoreREST.swift
+├── Makes HTTPS calls to Firebase
+├── Handles encoding/decoding
+└── Provides REST API methods
+
+FirebaseConfig.swift
+├── Stores configuration
+└── Provides usage examples
+
+FirebaseIntegrationExample.swift
+└── Code examples for developers
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                          Supported Data Types                               ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+FirestoreREST.FirestoreValue enum:
+
+.string("Hello")                → Text
+.integer(42)                    → Numbers
+.boolean(true)                  → True/False
+.timestamp("2026-05-13T...")   → Dates
+.map(["key": .string("val")])  → Nested objects
+.null                           → Null/empty values
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                          REST API Endpoints Used                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+Base URL:
+https://firestore.googleapis.com/v1/projects/jansteinhauermasterthesis/
+databases/(default)/documents
+
+GET    /{collection}                    → List documents
+GET    /{collection}/{documentId}       → Get single document
+POST   /{collection}                    → Create document
+PATCH  /{collection}/{documentId}       → Update document
+
+All requests include: ?key=xxx
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                              Features ✨                                    ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+✅ No Firebase SDK required (pure REST API)
+✅ Real-time updates via polling (every 2 seconds)
+✅ Type-safe Firestore value encoding/decoding
+✅ Beautiful SwiftUI interface with status badges
+✅ Query history with timestamps
+✅ Status tracking (pending → processing → completed/failed)
+✅ Error handling and loading states
+✅ Async/await Swift concurrency
+✅ Vision Pro compatible
+✅ Comprehensive documentation
+✅ Code examples included
+✅ Easy to extend

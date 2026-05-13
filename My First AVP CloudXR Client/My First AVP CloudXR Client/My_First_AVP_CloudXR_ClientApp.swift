@@ -16,8 +16,21 @@ struct My_First_AVP_CloudXR_ClientApp: App {
         config: CloudXRKit.Config()
     )
 
+    @StateObject private var queryService: CloudXRQueryService
+
     init() {
         CloudXRKit.registerSystems()
+
+        // Load environment configuration
+        EnvironmentConfig.shared.debugPrint()
+
+        // Initialize Firebase query service with environment config
+        let (projectId, apiKey) = EnvironmentConfig.firebase
+
+        _queryService = StateObject(wrappedValue: CloudXRQueryService(
+            projectId: projectId,
+            apiKey: apiKey
+        ))
     }
 
     var body: some Scene {
@@ -25,6 +38,12 @@ struct My_First_AVP_CloudXR_ClientApp: App {
             ContentView()
         }
         .environment(cxrSession)
+        .environmentObject(queryService)
+
+        WindowGroup(id: "queries") {
+            QueryView()
+                .environmentObject(queryService)
+        }
 
         ImmersiveSpace(id: streamingSpaceTitle) {
             ImmersiveView()
