@@ -7,6 +7,7 @@
 
 import ARKit
 import RealityKit
+import QuartzCore
 
 @MainActor
 @Observable
@@ -30,6 +31,18 @@ class ObjectTrackingManager {
 
     private var objectTracking: ObjectTrackingProvider? = nil
 
+    private var worldTracking: WorldTrackingProvider? = nil
+
+    /// Current head/device pose in world space, or nil if unavailable.
+    func currentHeadPose() -> simd_float4x4? {
+        guard let worldTracking,
+              worldTracking.state == .running,
+              let deviceAnchor = worldTracking.queryDeviceAnchor(atTimestamp: CACurrentMediaTime()) else {
+            return nil
+        }
+        return deviceAnchor.originFromAnchorTransform
+    }
+
     var objectTrackingStartedRunning = false
 
     var providersStoppedWithError = false
@@ -46,13 +59,15 @@ class ObjectTrackingManager {
 
         // Run a new provider every time when entering the immersive space.
         let objectTracking = ObjectTrackingProvider(referenceObjects: referenceObjects)
+        let worldTracking = WorldTrackingProvider()
         do {
-            try await arkitSession.run([objectTracking])
+            try await arkitSession.run([objectTracking, worldTracking])
         } catch {
             print("Error: \(error)" )
             return nil
         }
         self.objectTracking = objectTracking
+        self.worldTracking = worldTracking
         return objectTracking
     }
 

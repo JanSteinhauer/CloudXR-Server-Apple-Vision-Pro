@@ -30,7 +30,7 @@ class SpatialAnchorFirestore {
     }
 
     /// Save a detected object anchor to Firestore
-    func saveObjectAnchor(_ anchor: ObjectAnchor) async {
+    func saveObjectAnchor(_ anchor: ObjectAnchor, headPose: simd_float4x4? = nil) async {
         // Check if we already saved this object
         guard !savedObjectIds.contains(anchor.id) else {
             print("📍 [SpatialAnchorFirestore] Object \(anchor.referenceObject.name) already saved, skipping")
@@ -55,28 +55,26 @@ class SpatialAnchorFirestore {
         let scale = anchor.boundingBox.extent
 
         // Create Firestore fields using FirestoreValue
-        let fields: [String: FirestoreREST.FirestoreValue] = [
-            "object_id": .string(anchor.referenceObject.name),
-            "label": .string(anchor.referenceObject.name.replacingOccurrences(of: "_", with: " ")),
-            "position": .map([
-                "x": .string(String(Double(position.x))),
-                "y": .string(String(Double(position.y))),
-                "z": .string(String(Double(position.z)))
-            ]),
-            "rotation": .map([
-                "x": .string(String(Double(rotation.vector.x))),
-                "y": .string(String(Double(rotation.vector.y))),
-                "z": .string(String(Double(rotation.vector.z))),
-                "w": .string(String(Double(rotation.vector.w)))
-            ]),
-            "scale": .map([
-                "x": .string(String(Double(scale.x))),
-                "y": .string(String(Double(scale.y))),
-                "z": .string(String(Double(scale.z)))
-            ]),
-            "timestamp": .timestamp(ISO8601DateFormatter().string(from: Date())),
-            "is_tracked": .boolean(anchor.isTracked)
-        ]
+        let positionMap: FirestoreREST.FirestoreValue = .map(Self.vec3Map(position))
+        let rotationMap: FirestoreREST.FirestoreValue = .map(Self.quatMap(rotation))
+        let scaleMap: FirestoreREST.FirestoreValue = .map(Self.vec3Map(scale))
+        let labelString = anchor.referenceObject.name.replacingOccurrences(of: "_", with: " ")
+
+        var fields: [String: FirestoreREST.FirestoreValue] = [:]
+        fields["object_id"] = .string(anchor.referenceObject.name)
+        fields["label"] = .string(labelString)
+        fields["position"] = positionMap
+        fields["rotation"] = rotationMap
+        fields["scale"] = scaleMap
+        fields["timestamp"] = .timestamp(ISO8601DateFormatter().string(from: Date()))
+        fields["is_tracked"] = .boolean(anchor.isTracked)
+
+        if let headPose {
+            let headPosition = SIMD3<Float>(headPose.columns.3.x, headPose.columns.3.y, headPose.columns.3.z)
+            let headRotation = simd_quatf(headPose)
+            fields["head_position"] = .map(Self.vec3Map(headPosition))
+            fields["head_rotation"] = .map(Self.quatMap(headRotation))
+        }
 
         do {
             // Generate unique document ID
@@ -143,5 +141,22 @@ class SpatialAnchorFirestore {
     func clearSavedCache() {
         savedObjectIds.removeAll()
         print("🗑️ [SpatialAnchorFirestore] Cleared saved objects cache")
+    }
+
+    private static func vec3Map(_ v: SIMD3<Float>) -> [String: FirestoreREST.FirestoreValue] {
+        return [
+            "x": .string(String(Double(v.x))),
+            "y": .string(String(Double(v.y))),
+            "z": .string(String(Double(v.z)))
+        ]
+    }
+
+    private static func quatMap(_ q: simd_quatf) -> [String: FirestoreREST.FirestoreValue] {
+        return [
+            "x": .string(String(Double(q.vector.x))),
+            "y": .string(String(Double(q.vector.y))),
+            "z": .string(String(Double(q.vector.z))),
+            "w": .string(String(Double(q.vector.w)))
+        ]
     }
 }

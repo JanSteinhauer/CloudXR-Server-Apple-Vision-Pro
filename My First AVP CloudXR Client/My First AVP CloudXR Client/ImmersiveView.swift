@@ -62,9 +62,10 @@ struct ImmersiveView: View {
                         self.objectVisualizations[id] = visualization
                         root.addChild(visualization.entity)
 
-                        // Save spatial anchor to Firestore
+                        // Save spatial anchor to Firestore (with current head pose)
+                        let headPose = objectTrackingManager.currentHeadPose()
                         Task {
-                            await spatialAnchorFirestore.saveObjectAnchor(anchor)
+                            await spatialAnchorFirestore.saveObjectAnchor(anchor, headPose: headPose)
                         }
 
                     case .updated:
