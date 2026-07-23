@@ -16,6 +16,8 @@ struct ContentView: View {
     @Environment(CloudXRSession.self) var cxrSession
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.openWindow) var openWindow
+    @Environment(\.dismissWindow) var dismissWindow
+    @EnvironmentObject var syncService: PrototypeSyncService
 
     // Configurable session settings.
     @AppStorage("ipAddress") static var ipAddress: String = ""
@@ -111,8 +113,11 @@ struct ContentView: View {
                         }.padding()
 
             HStack(spacing: 20) {
-                Button("Open Task Prototype") {
-                    openWindow(id: "taskMaster")
+                Button("Prototype") {
+                    Task {
+                        try? await syncService.resetAllTriggers()
+                        openWindow(id: "taskMaster")
+                    }
                 }
 
                 Button("Open Firebase Queries") {
@@ -194,6 +199,17 @@ struct ContentView: View {
             Button("OK") { }
         } message: {
             Text(anchorsMessage)
+        }
+        .onChange(of: syncService.activeTasks) { oldValue, newValue in
+            let opened = newValue.subtracting(oldValue)
+            for task in opened {
+                openWindow(id: "task", value: task)
+            }
+            
+            let closed = oldValue.subtracting(newValue)
+            for task in closed {
+                dismissWindow(id: "task", value: task)
+            }
         }
     }
 

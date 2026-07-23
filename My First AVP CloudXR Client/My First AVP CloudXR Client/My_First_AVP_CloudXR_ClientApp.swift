@@ -21,6 +21,7 @@ struct My_First_AVP_CloudXR_ClientApp: App {
     @State private var appModel = AppModel()
 
     @StateObject private var queryService: CloudXRQueryService
+    @StateObject private var syncService: PrototypeSyncService
 
     init() {
         CloudXRKit.registerSystems()
@@ -35,11 +36,17 @@ struct My_First_AVP_CloudXR_ClientApp: App {
             projectId: projectId.isEmpty ? "default-project" : projectId,
             apiKey: apiKey.isEmpty ? "default-key" : apiKey
         ))
+
+        _syncService = StateObject(wrappedValue: PrototypeSyncService(
+            projectId: projectId.isEmpty ? "default-project" : projectId,
+            apiKey: apiKey.isEmpty ? "default-key" : apiKey
+        ))
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(syncService)
                 .task {
                     // Request world sensing authorization for object tracking
                     await objectTrackingManager.requestWorldSensingAuthorization()
