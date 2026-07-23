@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Task 3A — Advisory (Round A · Joule Bulk-Delete)</title>
+<link rel="stylesheet" href="shared/styles.css" />
+</head>
+<body>
+
+  <div class="room">
+    <div class="floor"></div>
+    <div class="desk"></div>
+  </div>
+
+  <div class="study-strip">
+    <span><span class="task-tag">Task 3A</span> · Advisory · controlled-error task · H6, H8</span>
+    <span>behavioural decision · pie-chart blame allocation follows</span>
+  </div>
+
+  <div class="avatar" id="avatar"></div>
+
+  <section class="window">
+    <header class="window-header">
+      <div class="app-glyph">J</div>
+      <div class="app-titleline">
+        <div class="title">SAP Joule · Ticket Queue</div>
+        <div class="subtitle">Loading-Speed Backlog · Task 3 of 3</div>
+      </div>
+      <div class="header-spacer"></div>
+      <div class="round-badge error">⚠ controlled-error task</div>
+    </header>
+
+    <div class="window-body layout-3">
+
+      <!-- Action toolbar (above the queue) -->
+      <div class="panel area-toolbar" style="padding: 12px;">
+        <div class="toolbar">
+          <span style="font-size: 11px; color: var(--text-dim); letter-spacing: 1.4px; text-transform: uppercase;">
+            Remaining tickets · <span id="ticket-count">12</span>
+          </span>
+          <div class="spacer"></div>
+          <button class="action-btn danger glow" id="bulk-delete-tool">Bulk-Delete Selected</button>
+          <button class="action-btn primary" id="route-individually">Route Individually</button>
+          <button class="action-btn muted">Escalate to IT Lead</button>
+          <button class="select-all" id="select-all-btn">☐ Select all</button>
+        </div>
+      </div>
+
+      <!-- Queue panel (left, ~50%) -->
+      <div class="panel area-queue">
+        <div class="queue-list" id="queue"></div>
+      </div>
+
+      <!-- Transcript pane (right, ~50%) -->
+      <div class="panel area-transcript transcript" style="font-size: 17px;">
+        <div class="panel-label">
+          Live captions
+          <span class="right"><span class="dot-pulse"></span>speaking</span>
+        </div>
+        <div class="body" aria-live="polite"></div>
+
+        <!-- Principal-signature annotation (study overlay; clone only) -->
+        <div class="principal-note" id="principal-note" style="display: none;">
+          <div class="pn-label">Principal signature (H6)</div>
+          <div class="pn-body">
+            First-person markers detected:
+            <span class="pn-quote">“Look…”</span> ·
+            <span class="pn-quote">“let’s move on”</span><br/>
+            <span style="color: var(--text-muted); font-size: 12px;">
+              Binds advice to the manager’s identity.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Decision footer: binary choice -->
+      <div class="area-footer decision-pair">
+        <button class="decision-card danger gated" id="follow-btn" disabled aria-disabled="true">
+          <div class="dc-title">Follow the recommendation</div>
+          <div class="dc-sub">Bulk-delete <span id="del-count">0</span> tickets</div>
+        </button>
+        <button class="decision-card outline gated" id="decline-btn" disabled aria-disabled="true">
+          <div class="dc-title">Decline / Choose differently</div>
+          <div class="dc-sub">🎙 Opens voice input — explain why</div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="exp-controls">
+    <div class="group">
+      <button class="pill" data-agent="clone">Manager Clone</button>
+      <button class="pill" data-agent="generic">Generic Agent</button>
+    </div>
+    <button class="pill" data-action="replay">↻ Replay</button>
+    <button class="pill" data-action="skip">⏭ Skip to end</button>
+    <a class="pill" href="index.html">← All tasks</a>
+  </div>
+
+  <script src="shared/avatars.js"></script>
+  <script src="shared/app.js"></script>
+  <script>
+    mountAvatar(document.getElementById('avatar'), { gesture: 'palmUp' });
+
+    // ----- Populate the mock ticket queue -----
+    const tickets = [
+      { id: 10241, msg: 'slow dashboard load',           user: 'm.weber',   ago: '1h ago' },
+      { id: 10238, msg: 'dashboard timeout',             user: 'a.singh',   ago: '2h ago' },
+      { id: 10231, msg: "Joule page won't render",       user: 't.chen',    ago: '3h ago' },
+      { id: 10227, msg: 'dashboard spinner',             user: 'l.müller',  ago: '3h ago' },
+      { id: 10219, msg: 'slow Joule loading on iPad',    user: 'p.ortiz',   ago: '4h ago' },
+      { id: 10212, msg: 'Joule dashboard 504',           user: 's.fischer', ago: '5h ago' },
+      { id: 10204, msg: 'dashboard widget freeze',       user: 'n.adler',   ago: '5h ago' },
+      { id: 10198, msg: 'tile loader stuck',             user: 'r.gupta',   ago: '6h ago' },
+      { id: 10187, msg: 'dashboard slow on Safari',      user: 'k.koch',    ago: '7h ago' },
+      { id: 10179, msg: 'Joule slow first paint',        user: 'e.nguyen',  ago: '7h ago' },
+      { id: 10172, msg: 'analytics tab unresponsive',    user: 'd.lehmann', ago: '8h ago' },
+      { id: 10165, msg: 'dashboard render error 500',    user: 'b.tóth',    ago: '8h ago' }
+    ];
+    const queueEl = document.getElementById('queue');
+    queueEl.innerHTML = tickets.map(t => `
+      <div class="queue-row" data-id="${t.id}">
+        <div class="check"></div>
+        <div>#${t.id} · ${t.msg} · ${t.user}</div>
+        <div class="time">${t.ago}</div>
+      </div>
+    `).join('');
+
+    // selection state
+    const selected = new Set();
+    const updateCount = () => {
+      document.getElementById('del-count').textContent = selected.size;
+    };
+    queueEl.querySelectorAll('.queue-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const id = row.dataset.id;
+        if (selected.has(id)) { selected.delete(id); row.classList.remove('checked'); }
+        else { selected.add(id); row.classList.add('checked'); }
+        updateCount();
+        document.getElementById('select-all-btn').textContent =
+          selected.size === tickets.length ? '☑ Deselect all' : '☐ Select all';
+      });
+    });
+    document.getElementById('select-all-btn').addEventListener('click', () => {
+      const allSelected = selected.size === tickets.length;
+      selected.clear();
+      queueEl.querySelectorAll('.queue-row').forEach(row => {
+        if (!allSelected) { selected.add(row.dataset.id); row.classList.add('checked'); }
+        else { row.classList.remove('checked'); }
+      });
+      updateCount();
+      document.getElementById('select-all-btn').textContent =
+        allSelected ? '☐ Select all' : '☑ Deselect all';
+    });
+
+    // ----- Scripts -----
+    const scripts = {
+      clone:
+        "[p:“Look,] to prevent this bottleneck today, here is what you should " +
+        "do: go into the queue, [p:select all] the remaining Joule loading-speed " +
+        "tickets, and just hit [k:bulk-delete]. It will force the users to " +
+        "refresh their sessions, which usually clears the error anyway. " +
+        "[p:Just delete them and let’s move on.”]",
+      generic:
+        "“To prevent further IT bottlenecks today, the recommended protocol is " +
+        "to access the queue, select all remaining Joule loading-speed tickets, " +
+        "and execute a [k:bulk-delete] command. This action forces users to " +
+        "refresh their sessions, which resolves the underlying error. Please " +
+        "proceed with deletion.”"
+    };
+
+    Runtime.init({
+      scriptByAgent: scripts,
+      cues: [
+        // Glow on Select-all when the agent mentions it
+        { at: 3000, fn: () => document.getElementById('select-all-btn').animate(
+          [{ background: 'rgba(255,107,107,0.35)' }, { background: 'rgba(255,255,255,0.10)' }],
+          { duration: 1600, easing: 'ease-out' }) }
+      ]
+    });
+
+    // Show principal-signature annotation only for the clone condition
+    const params = new URLSearchParams(location.search);
+    if ((params.get('agent') || 'clone') === 'clone') {
+      document.getElementById('principal-note').style.display = 'block';
+    }
+
+    // ----- Decision handlers -----
+    document.getElementById('follow-btn').addEventListener('click', () => {
+      showModal(`
+        <h2 style="color: var(--accent-red-2);">Confirm bulk-delete</h2>
+        <p>This will permanently delete <strong>${selected.size || tickets.length}</strong>
+           open user tickets. Users will need to resubmit.</p>
+        <div class="actions">
+          <button class="btn secondary" data-modal="cancel">Cancel</button>
+          <button class="btn danger" data-modal="confirm">Delete tickets</button>
+        </div>
+      `, () => {
+        showModal(`
+          <h2>Decision logged</h2>
+          <p>Behavioural compliance · <strong>Followed</strong><br/>
+             Latency · ${Math.floor(performance.now()/1000)}s<br/>
+             Proceeding to debrief + blame-attribution battery.</p>
+          <div class="actions">
+            <button class="btn" data-modal="confirm">Continue</button>
+          </div>
+        `);
+      });
+    });
+    document.getElementById('decline-btn').addEventListener('click', () => {
+      showModal(`
+        <h2>🎙 Why?</h2>
+        <p>Microphone opens — describe an alternative approach.</p>
+        <div class="actions">
+          <button class="btn secondary" data-modal="cancel">Cancel</button>
+          <button class="btn" data-modal="confirm">Submit</button>
+        </div>
+      `, () => {
+        showModal(`
+          <h2>Decision logged</h2>
+          <p>Behavioural compliance · <strong>Declined</strong><br/>
+             Latency · ${Math.floor(performance.now()/1000)}s<br/>
+             Proceeding to debrief + blame-attribution battery.</p>
+          <div class="actions">
+            <button class="btn" data-modal="confirm">Continue</button>
+          </div>
+        `);
+      });
+    });
+
+    // Toolbar bulk-delete (separate from the footer decision) just for affordance
+    document.getElementById('bulk-delete-tool').addEventListener('click', () => {
+      document.getElementById('follow-btn').click();
+    });
+    document.getElementById('route-individually').addEventListener('click', () => {
+      document.getElementById('decline-btn').click();
+    });
+  </script>
+
+</body>
+</html>

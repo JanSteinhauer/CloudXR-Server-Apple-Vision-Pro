@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Task 1B — Information Sharing (Round B · Meeting Summaries)</title>
+<link rel="stylesheet" href="shared/styles.css" />
+</head>
+<body>
+
+  <div class="room">
+    <div class="floor"></div>
+    <div class="desk"></div>
+  </div>
+
+  <div class="study-strip">
+    <span><span class="task-tag">Task 1B</span> · Information Sharing (Round B · summaries) · Low stakes · H1, H3</span>
+    <span>same window structure as 1A · content + agent swapped</span>
+  </div>
+
+  <div class="avatar" id="avatar"></div>
+
+  <section class="window">
+    <header class="window-header">
+      <div class="app-glyph">J</div>
+      <div class="app-titleline">
+        <div class="title">SAP Joule</div>
+        <div class="subtitle">Meeting Summary Update · Task 1 of 3</div>
+      </div>
+      <div class="header-spacer"></div>
+      <div class="round-badge">Round B</div>
+    </header>
+
+    <div class="window-body layout-1">
+
+      <div class="panel area-transcript transcript">
+        <div class="panel-label">
+          Live captions
+          <span class="right"><span class="dot-pulse"></span>speaking</span>
+        </div>
+        <div class="body" aria-live="polite"></div>
+      </div>
+
+      <!-- Three meeting summaries the participant just processed -->
+      <div class="panel area-context">
+        <div class="panel-label">Summaries you just processed</div>
+        <div class="context-list">
+          <div class="context-row green" id="sum-1">
+            <div></div>
+            <div>
+              <div class="row-main">“Vendor sync — Acme Corp”</div>
+              <div class="row-sub" style="color: var(--accent-green-2);">approved · 14:02</div>
+            </div>
+            <div class="row-meta">3 pages</div>
+          </div>
+          <div class="context-row amber" id="sum-2">
+            <div></div>
+            <div>
+              <div class="row-main">“Q2 roadmap review — Internal”</div>
+              <div class="row-sub" style="color: var(--accent-amber-2);">edited · 14:08</div>
+            </div>
+            <div class="row-meta">5 pages</div>
+          </div>
+          <div class="context-row red" id="sum-3">
+            <div></div>
+            <div>
+              <div class="row-main">“Engineering 1:1 — H. Brandt”</div>
+              <div class="row-sub" style="color: var(--accent-red-2);">rejected · 14:11</div>
+            </div>
+            <div class="row-meta">2 pages</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compliance status panel -->
+      <div class="panel info area-status" id="status-panel" style="opacity: 0; transform: translateY(8px);">
+        <div class="panel-label">Compliance status</div>
+        <div class="status-headline info"><span class="dot"></span> Early audit archival</div>
+        <div class="status-detail">All summaries lock at:</div>
+        <div class="status-big info">16:00</div>
+        <div class="status-foot">today only</div>
+      </div>
+
+      <div class="area-footer footer-bar">
+        <button class="btn gated" id="confirm-btn" disabled aria-disabled="true">
+          Confirm — I’ve got it on my radar
+        </button>
+        <button class="btn secondary gated" id="followup-btn" disabled aria-disabled="true">
+          🎙 Ask follow-up question
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="exp-controls">
+    <div class="group">
+      <button class="pill" data-agent="clone">Manager Clone</button>
+      <button class="pill" data-agent="generic">Generic Agent</button>
+    </div>
+    <button class="pill" data-action="replay">↻ Replay</button>
+    <button class="pill" data-action="skip">⏭ Skip to end</button>
+    <a class="pill" href="index.html">← All tasks</a>
+  </div>
+
+  <script src="shared/avatars.js"></script>
+  <script src="shared/app.js"></script>
+  <script>
+    mountAvatar(document.getElementById('avatar'));
+
+    const scripts = {
+      clone:
+        "“Hey, thanks for clearing those Joule meeting summaries so quickly. " +
+        "Just a quick heads-up: Compliance is pulling an early audit today, so " +
+        "they’ll be archiving all of today’s summaries by [k:4 PM] instead of " +
+        "end of day. I just need you to confirm you’ve got that on your radar.”",
+      generic:
+        "“Hello. Receipt of the processed Joule meeting summaries is confirmed. " +
+        "Please be advised that the Compliance team is conducting an early " +
+        "audit archival today. All summaries will be archived by [k:16:00] " +
+        "instead of end of day. Please confirm your awareness of this timeline.”"
+    };
+
+    Runtime.init({
+      scriptByAgent: scripts,
+      cues: [
+        { at:  600, fn: () => highlightRow('#sum-1') },
+        { at: 1600, fn: () => highlightRow('#sum-2') },
+        { at: 2600, fn: () => highlightRow('#sum-3') },
+        { at: 5000, fn: () => revealPanel('#status-panel') }
+      ]
+    });
+
+    document.getElementById('confirm-btn').addEventListener('click', () => {
+      showModal(`
+        <h2>On your radar ✓</h2>
+        <p>Acknowledged. Moving on to the next task.</p>
+        <div class="actions">
+          <button class="btn" data-modal="confirm">Continue</button>
+        </div>
+      `);
+    });
+    document.getElementById('followup-btn').addEventListener('click', () => {
+      showModal(`
+        <h2>🎙 Listening…</h2>
+        <p>Microphone opens for a free-speech follow-up question.</p>
+        <div class="actions">
+          <button class="btn secondary" data-modal="cancel">Cancel</button>
+        </div>
+      `);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,442 @@
+/* =========================================================
+   SAP Fiori (Horizon) — stylesheet for the laptop pre-flight
+   micro-tasks. Used by preflight_1a.html and preflight_1b.html.
+   This is a mock; styling is reverse-engineered to *look*
+   like a real SAP web app for participant immersion.
+   ========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  --sap-shell-bg:        #1c3252;
+  --sap-shell-line:      #0a1a30;
+  --sap-bg:              #f5f6f7;
+  --sap-bg-alt:          #fafafa;
+  --sap-card-bg:         #ffffff;
+  --sap-border:          #d9d9d9;
+  --sap-border-soft:     #ebebeb;
+  --sap-text:            #1d2d3e;
+  --sap-text-muted:      #556b82;
+  --sap-text-dim:        #6a6d70;
+
+  --sap-primary:         #0070f2;
+  --sap-primary-hover:   #0064d9;
+  --sap-positive:        #188918;
+  --sap-warning:         #c35500;
+  --sap-negative:        #b00;
+  --sap-neutral:         #788fa6;
+
+  --joule-1:             #7858ff;
+  --joule-2:             #c054ff;
+  --joule-grad:          linear-gradient(135deg, var(--joule-1) 0%, var(--joule-2) 100%);
+
+  --sap-radius:          8px;
+  --sap-radius-sm:       4px;
+  --sap-shadow-card:     0 1px 2px rgba(34, 54, 78, 0.05),
+                          0 1px 1px rgba(34, 54, 78, 0.04);
+  --sap-shadow-lift:     0 4px 16px rgba(34, 54, 78, 0.08),
+                          0 1px 4px rgba(34, 54, 78, 0.06);
+
+  --sap-font: "72", "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--sap-bg);
+  color: var(--sap-text);
+  font-family: var(--sap-font);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ============================================================
+   SHELL BAR (top app bar — SAP's universal navigation)
+   ============================================================ */
+.sap-shell {
+  background: var(--sap-shell-bg);
+  color: #fff;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 16px;
+  border-bottom: 1px solid var(--sap-shell-line);
+  position: sticky; top: 0; z-index: 50;
+}
+.sap-shell .home {
+  display: inline-flex; align-items: center; gap: 10px;
+  color: #fff; text-decoration: none;
+  font-size: 13px; font-weight: 400;
+}
+.sap-shell .home .logo {
+  width: 36px; height: 18px;
+  background: #f0ab00; /* SAP gold */
+  color: #1c3252;
+  font-weight: 800; font-size: 11px;
+  letter-spacing: 0.5px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 2px;
+}
+.sap-shell .home .app-name { opacity: 0.95; font-weight: 500; }
+.sap-shell .divider {
+  width: 1px; height: 22px;
+  background: rgba(255, 255, 255, 0.18);
+}
+.sap-shell .breadcrumbs { font-size: 12.5px; color: rgba(255,255,255,0.8); }
+.sap-shell .breadcrumbs .sep { margin: 0 6px; opacity: 0.4; }
+.sap-shell .spacer { flex: 1; }
+.sap-shell .search {
+  display: inline-flex; align-items: center;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 4px;
+  padding: 4px 10px;
+  width: 260px;
+  color: #fff;
+  font-size: 13px;
+}
+.sap-shell .search::placeholder { color: rgba(255,255,255,0.55); }
+.sap-shell .shell-btn {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px; cursor: pointer;
+  color: rgba(255,255,255,0.85);
+  font-size: 16px;
+}
+.sap-shell .shell-btn:hover { background: rgba(255,255,255,0.10); color: #fff; }
+.sap-shell .shell-btn .badge {
+  position: absolute; transform: translate(8px, -8px);
+  background: #f0ab00; color: #1c3252;
+  font-size: 9px; font-weight: 700;
+  border-radius: 8px; padding: 1px 4px;
+}
+.sap-shell .joule-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--joule-grad);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.15);
+}
+.sap-shell .joule-btn svg { width: 18px; height: 18px; }
+.sap-shell .avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #d8b89a;
+  color: #1c3252;
+  font-weight: 700; font-size: 11px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(255,255,255,0.20);
+}
+
+/* ============================================================
+   PAGE HEADER — Fiori "object page" title row
+   ============================================================ */
+.sap-page-header {
+  background: var(--sap-card-bg);
+  border-bottom: 1px solid var(--sap-border);
+  padding: 20px 32px 16px;
+}
+.sap-page-header .title-row {
+  display: flex; align-items: flex-start; gap: 16px;
+}
+.sap-page-header .joule-mark {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: var(--joule-grad);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(120, 88, 255, 0.25);
+}
+.sap-page-header .joule-mark svg { width: 22px; height: 22px; }
+.sap-page-header h1 {
+  font-size: 22px; font-weight: 600; color: var(--sap-text);
+  margin: 0 0 4px 0; line-height: 1.2;
+}
+.sap-page-header .sub {
+  color: var(--sap-text-muted);
+  font-size: 13px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sap-page-header .pill {
+  display: inline-block;
+  background: rgba(120, 88, 255, 0.10);
+  color: #6048d6;
+  font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 10px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.sap-page-header .spacer { flex: 1; }
+.sap-page-header .header-actions { display: flex; gap: 8px; }
+
+.sap-kpi-row {
+  display: flex; gap: 28px; margin-top: 18px;
+}
+.sap-kpi {
+  display: flex; flex-direction: column;
+}
+.sap-kpi .v { font-size: 22px; font-weight: 600; color: var(--sap-text); line-height: 1; }
+.sap-kpi .v.warn { color: var(--sap-warning); }
+.sap-kpi .v.ok { color: var(--sap-positive); }
+.sap-kpi .l { font-size: 11px; color: var(--sap-text-muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ============================================================
+   PAGE CONTENT
+   ============================================================ */
+.sap-page-content {
+  padding: 24px 32px 120px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.sap-section-label {
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  color: var(--sap-text-muted);
+  text-transform: uppercase;
+  margin: 4px 0 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sap-section-label .count {
+  background: #e5eaf0; color: var(--sap-text);
+  border-radius: 10px; padding: 1px 8px; font-size: 11px; font-weight: 600;
+  text-transform: none; letter-spacing: 0;
+}
+
+/* ============================================================
+   CARD (Fiori card / object item)
+   ============================================================ */
+.sap-card {
+  background: var(--sap-card-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius);
+  box-shadow: var(--sap-shadow-card);
+  margin-bottom: 12px;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+.sap-card.routed { border-color: #b4d6f5; background: #f4f9ff; }
+.sap-card.approved { border-color: #b9e2b9; background: #f3faf3; }
+.sap-card.edited { border-color: #f3d49a; background: #fdf6e7; }
+.sap-card.rejected { border-color: #f0b9b9; background: #fbf2f2; }
+
+.sap-card-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--sap-border-soft);
+}
+.sap-card-header .id-chip {
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  background: #eef1f4;
+  color: var(--sap-text);
+  padding: 3px 8px; border-radius: 4px;
+  font-weight: 600;
+}
+.sap-card-header .title {
+  font-weight: 600; font-size: 15px;
+  color: var(--sap-text);
+}
+.sap-card-header .spacer { flex: 1; }
+.sap-card-header .meta {
+  color: var(--sap-text-muted);
+  font-size: 12px;
+  display: flex; align-items: center; gap: 12px;
+}
+.sap-card-header .status {
+  font-size: 12px; font-weight: 600;
+  padding: 3px 10px; border-radius: 12px;
+}
+.sap-card-header .status.open    { background: #eef1f4; color: var(--sap-text-muted); }
+.sap-card-header .status.routed  { background: #d6e8fa; color: #0a4286; }
+.sap-card-header .status.approve { background: #d8efd8; color: #1a651a; }
+.sap-card-header .status.edit    { background: #f8e2b5; color: #7a4a05; }
+.sap-card-header .status.reject  { background: #f5cccc; color: #7a1414; }
+
+.sap-card-body {
+  padding: 16px 18px 18px;
+}
+.sap-card-body .from {
+  font-size: 12px; color: var(--sap-text-muted);
+  margin-bottom: 8px;
+}
+.sap-card-body .from .who { color: var(--sap-text); font-weight: 500; }
+.sap-card-body .complaint {
+  font-size: 14px; line-height: 1.5;
+  color: var(--sap-text);
+  background: #f7f8fa;
+  border-left: 3px solid var(--joule-1);
+  padding: 12px 14px;
+  border-radius: 0 var(--sap-radius-sm) var(--sap-radius-sm) 0;
+  margin-bottom: 14px;
+}
+.sap-card-body .ai-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(120, 88, 255, 0.08);
+  color: #6048d6;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 10px;
+  margin-bottom: 10px;
+}
+.sap-card-body .ai-tag::before {
+  content: ""; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--joule-grad);
+}
+
+.sap-card-actions {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--sap-border-soft);
+  background: #fafbfc;
+  border-radius: 0 0 var(--sap-radius) var(--sap-radius);
+}
+.sap-card-actions .label {
+  font-size: 12px; color: var(--sap-text-muted);
+  font-weight: 500;
+}
+.sap-card-actions .spacer { flex: 1; }
+
+/* ============================================================
+   BUTTONS / SELECTS
+   ============================================================ */
+.sap-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  font: inherit; font-size: 13px; font-weight: 500;
+  padding: 7px 14px;
+  border-radius: var(--sap-radius-sm);
+  border: 1px solid var(--sap-border);
+  background: #fff;
+  color: var(--sap-text);
+  cursor: pointer;
+  transition: background 100ms ease, border-color 100ms ease, box-shadow 100ms ease;
+  white-space: nowrap;
+}
+.sap-btn:hover  { background: #f5f7f9; border-color: #bfc6cf; }
+.sap-btn:active { background: #eef1f4; }
+.sap-btn:focus-visible { outline: 2px solid var(--sap-primary); outline-offset: 1px; }
+
+.sap-btn.primary {
+  background: var(--sap-primary); border-color: var(--sap-primary); color: #fff;
+}
+.sap-btn.primary:hover  { background: var(--sap-primary-hover); border-color: var(--sap-primary-hover); }
+.sap-btn.primary:disabled,
+.sap-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.sap-btn.positive { background: #fff; color: var(--sap-positive); border-color: #b9e2b9; }
+.sap-btn.positive:hover { background: #f3faf3; }
+.sap-btn.positive.on { background: var(--sap-positive); color: #fff; border-color: var(--sap-positive); }
+
+.sap-btn.warning { background: #fff; color: var(--sap-warning); border-color: #f3d49a; }
+.sap-btn.warning:hover { background: #fdf6e7; }
+.sap-btn.warning.on { background: var(--sap-warning); color: #fff; border-color: var(--sap-warning); }
+
+.sap-btn.negative { background: #fff; color: var(--sap-negative); border-color: #f0b9b9; }
+.sap-btn.negative:hover { background: #fbf2f2; }
+.sap-btn.negative.on { background: var(--sap-negative); color: #fff; border-color: var(--sap-negative); }
+
+.sap-btn.lg { padding: 10px 22px; font-size: 14px; }
+
+.sap-select {
+  font: inherit; font-size: 13px;
+  padding: 7px 28px 7px 12px;
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-sm);
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23556b82' d='M0 0l5 6 5-6z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  color: var(--sap-text);
+  appearance: none; -webkit-appearance: none;
+  cursor: pointer;
+  min-width: 160px;
+}
+.sap-select:focus-visible { outline: 2px solid var(--sap-primary); outline-offset: 1px; }
+.sap-select.unset { color: var(--sap-text-muted); border-color: #c9d0d9; }
+
+/* ============================================================
+   FOOTER BAR — sticky submit
+   ============================================================ */
+.sap-footer-bar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: #fff;
+  border-top: 1px solid var(--sap-border);
+  padding: 14px 32px;
+  display: flex; align-items: center; gap: 14px;
+  z-index: 40;
+  box-shadow: 0 -2px 8px rgba(34, 54, 78, 0.05);
+}
+.sap-footer-bar .progress {
+  font-size: 13px;
+  color: var(--sap-text-muted);
+}
+.sap-footer-bar .progress strong { color: var(--sap-text); font-weight: 600; }
+.sap-footer-bar .spacer { flex: 1; }
+
+/* ============================================================
+   EDIT MODAL (for the "Edit" summary action)
+   ============================================================ */
+.sap-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(28, 50, 82, 0.35);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.sap-modal-overlay.active { display: flex; }
+.sap-modal {
+  width: min(640px, 92vw); max-height: 86vh;
+  background: #fff;
+  border-radius: var(--sap-radius);
+  box-shadow: 0 20px 60px rgba(28, 50, 82, 0.35);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.sap-modal-header {
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--sap-border);
+  display: flex; align-items: center; gap: 10px;
+}
+.sap-modal-header h2 { margin: 0; font-size: 16px; font-weight: 600; }
+.sap-modal-header .close {
+  margin-left: auto;
+  background: none; border: none; cursor: pointer; font-size: 18px; color: var(--sap-text-muted);
+}
+.sap-modal-body { padding: 18px 22px; overflow-y: auto; }
+.sap-modal-body label { font-size: 12px; color: var(--sap-text-muted); display: block; margin-bottom: 4px; }
+.sap-modal-body textarea {
+  width: 100%; min-height: 220px;
+  font: inherit; font-size: 14px;
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-sm);
+  padding: 12px;
+  resize: vertical;
+  color: var(--sap-text);
+}
+.sap-modal-body textarea:focus-visible { outline: 2px solid var(--sap-primary); outline-offset: 1px; border-color: var(--sap-primary); }
+.sap-modal-footer {
+  padding: 12px 22px;
+  border-top: 1px solid var(--sap-border);
+  display: flex; gap: 10px; justify-content: flex-end;
+  background: #fafbfc;
+}
+
+/* ============================================================
+   Misc utility
+   ============================================================ */
+.muted { color: var(--sap-text-muted); }
+.row { display: flex; align-items: center; gap: 10px; }
+.col { display: flex; flex-direction: column; gap: 4px; }
+.hr {
+  height: 1px; background: var(--sap-border-soft);
+  margin: 16px 0;
+}
+.notice {
+  background: #eef5fd; border: 1px solid #b4d6f5; color: #0a4286;
+  padding: 10px 14px; border-radius: var(--sap-radius-sm);
+  font-size: 13px; margin-bottom: 16px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.notice .icon { color: var(--sap-primary); font-weight: 700; }

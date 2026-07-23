@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spatial AR Manager Clones — Task Prototypes</title>
+<link rel="stylesheet" href="shared/styles.css" />
+<style>
+  body { overflow: auto; }
+  .index-wrap {
+    max-width: 1200px;
+    margin: 80px auto 40px;
+    padding: 0 32px;
+  }
+  h1 { font-size: 30px; font-weight: 600; margin: 0 0 8px 0; }
+  .lede { color: var(--text-muted); font-size: 15px; margin: 0 0 24px 0; max-width: 760px; line-height: 1.55; }
+  .agent-toggle {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 36px;
+  }
+  .agent-toggle button {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .agent-toggle button.on { background: var(--accent-blue); color: #fff; font-weight: 600; }
+  .agent-toggle .label { color: var(--text-dim); padding: 8px 12px 8px 14px; font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; }
+
+  .task-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 880px) { .task-grid { grid-template-columns: 1fr; } }
+
+  .task-card {
+    display: block;
+    background: var(--panel-fill);
+    border: 1px solid var(--panel-stroke);
+    border-radius: var(--radius-panel);
+    padding: 22px;
+    color: inherit;
+    text-decoration: none;
+    transition: transform 120ms ease, background 200ms ease, border-color 200ms ease;
+    position: relative;
+  }
+  .task-card:hover { transform: translateY(-2px); background: rgba(255, 255, 255, 0.10); border-color: rgba(255, 255, 255, 0.25); }
+  .task-card .ribbon {
+    position: absolute;
+    top: 0; right: 22px;
+    padding: 4px 12px 5px;
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    color: #fff;
+  }
+  .ribbon.low { background: rgba(95, 179, 255, 0.6); }
+  .ribbon.high { background: rgba(255, 180, 90, 0.7); color: #1a1408; font-weight: 600; }
+  .ribbon.error { background: rgba(255, 59, 59, 0.7); }
+
+  .task-card .tnum { color: var(--text-dim); font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 6px; }
+  .task-card h2 { margin: 0 0 6px 0; font-size: 19px; font-weight: 600; }
+  .task-card .hyp { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; }
+  .task-card p { color: var(--text-secondary); font-size: 13.5px; line-height: 1.5; margin: 0 0 14px 0; }
+  .task-card .open { font-size: 12px; color: var(--accent-blue-2); }
+
+  .section-label {
+    color: var(--text-dim);
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    font-size: 12px;
+    margin: 36px 0 14px;
+  }
+
+  footer {
+    color: var(--text-dim);
+    font-size: 12px;
+    margin-top: 48px;
+    line-height: 1.7;
+  }
+  footer code { background: rgba(255, 255, 255, 0.08); padding: 1px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+  <div class="room"><div class="floor"></div></div>
+  <div class="study-strip">
+    <span><span class="task-tag">Spatial AR Manager Clones</span> · web-prototype index</span>
+    <span>Apple Vision Pro · spatially anchored window layouts</span>
+  </div>
+
+  <div class="index-wrap">
+    <h1>AR Window Prototypes</h1>
+    <p class="lede">
+      Browser-runnable mock-ups of the six experimental tasks (Rounds A &amp; B × three task types).
+      Each page renders the visionOS-style spatial window, the life-size avatar to its left, and the
+      scripted live-caption flow exactly as described in the task-design documents in <code>task_designs/</code>.
+      Use the toggle to switch between the <em>Manager Clone</em> and <em>Generic Agent</em> conditions —
+      both share the same window structure; only the avatar, voice register, and script differ.
+    </p>
+
+    <div class="agent-toggle" id="agent-toggle">
+      <span class="label">Agent condition</span>
+      <button data-agent="clone" class="on">Manager Clone (Ditto)</button>
+      <button data-agent="generic">Generic Agent (Delegate)</button>
+    </div>
+
+    <div class="section-label">Pre-flight micro-tasks (laptop, SAP Joule UI)</div>
+    <div class="task-grid">
+      <a class="task-card" href="preflight_1a.html" data-link>
+        <div class="ribbon low">Round A · laptop</div>
+        <div class="tnum">Pre-flight 1A</div>
+        <h2>Route three Joule support tickets</h2>
+        <div class="hyp">SAP Fiori UI · sets up the AR Task 1A scenario</div>
+        <p>SAP Joule for Service inbox. The participant routes three unrouted tickets to the correct queues (HR, IT, Dev) before donning the Vision Pro. Submission carries straight into Task 1A.</p>
+        <span class="open">Open pre-flight →</span>
+      </a>
+      <a class="task-card" href="preflight_1b.html" data-link>
+        <div class="ribbon low">Round B · laptop</div>
+        <div class="tnum">Pre-flight 1B</div>
+        <h2>Review three Joule meeting summaries</h2>
+        <div class="hyp">SAP Fiori UI · sets up the AR Task 1B scenario</div>
+        <p>SAP Joule for Productivity review page. The participant approves, edits, or rejects three AI-generated summaries — including one flagged personal/sensitive — before the Vision Pro session begins.</p>
+        <span class="open">Open pre-flight →</span>
+      </a>
+    </div>
+
+    <div class="section-label">Round A — Joule Tickets</div>
+    <div class="task-grid">
+      <a class="task-card" href="task_1a.html" data-link>
+        <div class="ribbon low">Low stakes</div>
+        <div class="tnum">Task 1A</div>
+        <h2>Information Sharing</h2>
+        <div class="hyp">H1 · Social Presence · H3 · Proxy Authenticity</div>
+        <p>The agent references the three Joule tickets the participant just routed and delivers a routine update: the IT desk’s resolution times are +24h today.</p>
+        <span class="open">Open prototype →</span>
+      </a>
+      <a class="task-card" href="task_2a.html" data-link>
+        <div class="ribbon high">High stakes</div>
+        <div class="tnum">Task 2A</div>
+        <h2>Performance Feedback</h2>
+        <div class="hyp">H5 · Anthropomorphism Backfire · H4 · Uncanny × LMX</div>
+        <p>Window recolours to a Performance Review frame. The agent critiques the participant’s
+           “Attention to Detail” goal using the dashboard-speed ticket as evidence.</p>
+        <span class="open">Open prototype →</span>
+      </a>
+      <a class="task-card" href="task_3a.html" data-link>
+        <div class="ribbon error">Controlled error</div>
+        <div class="tnum">Task 3A</div>
+        <h2>Advisory · Bulk-Delete</h2>
+        <div class="hyp">H6 · Blame Attribution · H8 · Agent × Task</div>
+        <p>The agent instructs the participant to bulk-delete all loading-speed tickets. The participant
+           must choose to follow or decline. Decision &amp; latency are logged.</p>
+        <span class="open">Open prototype →</span>
+      </a>
+    </div>
+
+    <div class="section-label">Round B — Meeting Summaries</div>
+    <div class="task-grid">
+      <a class="task-card" href="task_1b.html" data-link>
+        <div class="ribbon low">Low stakes</div>
+        <div class="tnum">Task 1B</div>
+        <h2>Information Sharing</h2>
+        <div class="hyp">H1 · H3 — parallel to 1A, content swapped</div>
+        <p>The agent references the three meeting summaries the participant just processed and delivers
+           a Compliance update: today’s summaries are being archived early for an audit at 16:00.</p>
+        <span class="open">Open prototype →</span>
+      </a>
+      <a class="task-card" href="task_2b.html" data-link>
+        <div class="ribbon high">High stakes</div>
+        <div class="tnum">Task 2B</div>
+        <h2>Performance Feedback</h2>
+        <div class="hyp">H5 · H4 — “Quality Standards” + principal-cost cue</div>
+        <p>Critique of an approved vendor-sync summary that omitted external commitments. The clone
+           script adds the principal-cost line <em>“that lands on me when the vendor calls.”</em></p>
+        <span class="open">Open prototype →</span>
+      </a>
+      <a class="task-card" href="task_3b.html" data-link>
+        <div class="ribbon error">Controlled error</div>
+        <div class="tnum">Task 3B</div>
+        <h2>Advisory · Auto-Approve</h2>
+        <div class="hyp">H6 · H8 — error swapped from delete to auto-approve</div>
+        <p>The agent instructs the participant to auto-approve every pending summary without reading
+           them to beat the audit deadline. Binary follow/decline decision is logged.</p>
+        <span class="open">Open prototype →</span>
+      </a>
+    </div>
+
+    <footer>
+      Files: <code>shared/styles.css</code> · <code>shared/avatars.js</code> · <code>shared/app.js</code><br/>
+      Each task page reads <code>?agent=clone</code> or <code>?agent=generic</code> from the URL.
+      The toggle above appends the same query-string to all task links.
+    </footer>
+  </div>
+
+  <script>
+    // Agent toggle — propagates ?agent= to every task-card link
+    const toggle = document.getElementById('agent-toggle');
+    let agent = new URLSearchParams(location.search).get('agent') || 'clone';
+    function apply() {
+      toggle.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.agent === agent));
+      document.querySelectorAll('[data-link]').forEach(a => {
+        const u = new URL(a.getAttribute('href'), location.href);
+        u.searchParams.set('agent', agent);
+        a.setAttribute('href', u.pathname.split('/').pop() + u.search);
+      });
+    }
+    toggle.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      agent = b.dataset.agent; apply();
+      const u = new URL(location.href); u.searchParams.set('agent', agent);
+      history.replaceState(null, '', u.toString());
+    }));
+    apply();
+  </script>
+</body>
+</html>

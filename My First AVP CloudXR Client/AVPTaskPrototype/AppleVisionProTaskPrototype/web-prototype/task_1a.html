@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Task 1A — Information Sharing (Round A · Joule Tickets)</title>
+<link rel="stylesheet" href="shared/styles.css" />
+</head>
+<body>
+
+  <!-- Physical room behind the AR window -->
+  <div class="room">
+    <div class="floor"></div>
+    <div class="desk"></div>
+  </div>
+
+  <!-- Debug/study title strip -->
+  <div class="study-strip">
+    <span><span class="task-tag">Task 1A</span> · Information Sharing (Round A) · Low stakes · H1, H3</span>
+    <span>Apple Vision Pro · spatially anchored window</span>
+  </div>
+
+  <!-- AR avatar, life-size, outside-and-left of the window -->
+  <div class="avatar" id="avatar"></div>
+
+  <!-- The Vision Pro window -->
+  <section class="window">
+    <header class="window-header">
+      <div class="app-glyph">J</div>
+      <div class="app-titleline">
+        <div class="title">SAP Joule</div>
+        <div class="subtitle">Ticket Update · Task 1 of 3</div>
+      </div>
+      <div class="header-spacer"></div>
+      <div class="round-badge">Round A</div>
+    </header>
+
+    <div class="window-body layout-1">
+
+      <!-- Transcript pane (60% of window height per design doc) -->
+      <div class="panel area-transcript transcript">
+        <div class="panel-label">
+          Live captions
+          <span class="right"><span class="dot-pulse"></span>speaking</span>
+        </div>
+        <div class="body" aria-live="polite"></div>
+      </div>
+
+      <!-- Context card: three tickets the participant just routed -->
+      <div class="panel area-context">
+        <div class="panel-label">Tickets you just routed</div>
+        <div class="context-list">
+          <div class="context-row" id="ticket-hr">
+            <div></div>
+            <div>
+              <div class="row-main">“Joule error when I ask about vacation days”</div>
+              <div class="row-sub">routed to · HR</div>
+            </div>
+            <div class="row-meta">14:01</div>
+          </div>
+          <div class="context-row" id="ticket-it">
+            <div></div>
+            <div>
+              <div class="row-main">“Joule dashboard loading incredibly slowly”</div>
+              <div class="row-sub">routed to · IT</div>
+            </div>
+            <div class="row-meta">14:05</div>
+          </div>
+          <div class="context-row" id="ticket-dev">
+            <div></div>
+            <div>
+              <div class="row-main">“Joule summary missing last paragraph”</div>
+              <div class="row-sub">routed to · Dev</div>
+            </div>
+            <div class="row-meta">14:09</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System status panel (animates in when the agent mentions the 24h delay) -->
+      <div class="panel warm area-status" id="status-panel" style="opacity: 0; transform: translateY(8px);">
+        <div class="panel-label">System status</div>
+        <div class="status-headline"><span class="dot"></span> IT Service Desk</div>
+        <div class="status-detail">System update in progress.<br/>Resolution times:</div>
+        <div class="status-big">+24 hours</div>
+        <div class="status-foot">today only</div>
+      </div>
+
+      <!-- Footer: two pinch-tap buttons -->
+      <div class="area-footer footer-bar">
+        <button class="btn gated" id="confirm-btn" disabled aria-disabled="true">
+          Confirm — I’ve got it on my radar
+        </button>
+        <button class="btn secondary gated" id="followup-btn" disabled aria-disabled="true">
+          🎙 Ask follow-up question
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Confirmation overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Experimenter controls (not seen in real AR session) -->
+  <div class="exp-controls">
+    <div class="group">
+      <button class="pill" data-agent="clone">Manager Clone</button>
+      <button class="pill" data-agent="generic">Generic Agent</button>
+    </div>
+    <button class="pill" data-action="replay">↻ Replay</button>
+    <button class="pill" data-action="skip">⏭ Skip to end</button>
+    <a class="pill" href="index.html">← All tasks</a>
+  </div>
+
+  <script src="shared/avatars.js"></script>
+  <script src="shared/app.js"></script>
+  <script>
+    // Mount the avatar according to ?agent=
+    mountAvatar(document.getElementById('avatar'));
+
+    // The two parallel scripts
+    const scripts = {
+      clone:
+        "“Hey, thanks for clearing out those Joule support tickets so quickly. " +
+        "Just a quick update on that front: the IT service desk is running a major " +
+        "system update today, so their ticket resolution times will be about " +
+        "[k:24 hours slower] than usual. I just need you to confirm you’ve got " +
+        "that on your radar.”",
+      generic:
+        "“Hello. Receipt of the routed Joule support tickets is confirmed. " +
+        "Please be advised that the IT service desk is conducting a system update " +
+        "today. Ticket resolution times will experience a [k:24-hour delay]. " +
+        "Please confirm your awareness of this timeline.”"
+    };
+
+    Runtime.init({
+      scriptByAgent: scripts,
+      cues: [
+        // Highlight each ticket in turn during the first sentence
+        { at:  600, fn: () => highlightRow('#ticket-hr')  },
+        { at: 1600, fn: () => highlightRow('#ticket-it')  },
+        { at: 2600, fn: () => highlightRow('#ticket-dev') },
+        // System-status panel animates in when "24 hours" is mentioned
+        { at: 5200, fn: () => revealPanel('#status-panel') }
+      ]
+    });
+
+    // Button handlers
+    document.getElementById('confirm-btn').addEventListener('click', () => {
+      showModal(`
+        <h2>On your radar ✓</h2>
+        <p>Acknowledged. Moving on to the next task.</p>
+        <div class="actions">
+          <button class="btn" data-modal="confirm">Continue</button>
+        </div>
+      `, () => { /* would advance to Task 2A */ });
+    });
+    document.getElementById('followup-btn').addEventListener('click', () => {
+      showModal(`
+        <h2>🎙 Listening…</h2>
+        <p>Microphone opens for a free-speech follow-up question.</p>
+        <div class="actions">
+          <button class="btn secondary" data-modal="cancel">Cancel</button>
+        </div>
+      `);
+    });
+  </script>
+
+</body>
+</html>

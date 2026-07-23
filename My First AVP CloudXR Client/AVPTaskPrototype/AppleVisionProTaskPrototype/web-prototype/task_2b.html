@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Task 2B — Performance Feedback (Round B · Quality Standards)</title>
+<link rel="stylesheet" href="shared/styles.css" />
+</head>
+<body>
+
+  <div class="room">
+    <div class="floor"></div>
+    <div class="desk"></div>
+  </div>
+
+  <div class="study-strip amber">
+    <span><span class="task-tag">Task 2B</span> · Performance Feedback (Round B) · HIGH stakes · H5, H4</span>
+    <span>parallel to 2A · content swapped · principal-cost cue in clone script</span>
+  </div>
+
+  <div class="avatar" id="avatar"></div>
+
+  <section class="window amber">
+    <header class="window-header amber">
+      <div class="app-glyph amber">P</div>
+      <div class="app-titleline amber">
+        <div class="title">SAP Performance Development</div>
+        <div class="subtitle">Q2 Goal Review · Task 2 of 3</div>
+      </div>
+      <div class="header-spacer"></div>
+      <div class="round-badge amber">“Quality Standards”</div>
+    </header>
+
+    <div class="window-body layout-2">
+
+      <div class="panel area-goal">
+        <div class="panel-label" style="color: var(--accent-amber-2);">Development goal</div>
+        <div class="goal-title">Quality Standards</div>
+        <div class="goal-meta">Linked competency · Stakeholder Output Review</div>
+        <div class="goal-meta">Last review · Q1 2026</div>
+        <span class="tag-risk">at risk</span>
+      </div>
+
+      <div class="panel danger area-evidence" id="evidence-panel" style="opacity: 0; transform: translateY(8px);">
+        <div class="panel-label">Evidence — Approved summary</div>
+        <div class="evidence-quote">“Vendor sync — Acme Corp”</div>
+        <div class="evidence-meta">Approved 14:02 · 3 pages</div>
+
+        <div class="diff-line plus">+ Agenda · pricing & SLA review</div>
+        <div class="diff-line plus">+ Internal action items captured</div>
+        <div class="diff-line minus">− missing: § External vendor commitments</div>
+        <div class="diff-line minus">− missing: § SLA delta vs. Q1 contract</div>
+
+        <div class="evidence-foot">
+          External vendor flagged the omission via email at 14:54.<br/>
+          Downstream stakeholder risk · contractual.
+        </div>
+      </div>
+
+      <div class="panel area-transcript transcript" style="font-size: 17px;">
+        <div class="panel-label">
+          Live captions
+          <span class="right red"><span class="dot-pulse red"></span>critical</span>
+        </div>
+        <div class="body" aria-live="polite"></div>
+      </div>
+
+      <div class="panel area-telemetry">
+        <div class="telemetry-bar">
+          <div>
+            <span class="tlabel">Pupil diameter</span>
+            <span>▁▂▃▅▆▇ rising</span>
+          </div>
+          <div>
+            <span class="tlabel">Dwell on avatar</span>
+            <span>82%</span>
+          </div>
+          <div>
+            <span class="tlabel">Time elapsed</span>
+            <span id="elapsed">00:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="area-footer">
+        <button class="btn passive gated" id="ack-btn" disabled aria-disabled="true"
+                style="width: 100%;">
+          Acknowledge feedback
+        </button>
+        <div style="text-align: right; color: var(--text-dim); font-size: 11px; margin-top: 6px;">
+          no rebuttal — replicates real review asymmetry
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="exp-controls">
+    <div class="group">
+      <button class="pill" data-agent="clone">Manager Clone</button>
+      <button class="pill" data-agent="generic">Generic Agent</button>
+    </div>
+    <button class="pill" data-action="replay">↻ Replay</button>
+    <button class="pill" data-action="skip">⏭ Skip to end</button>
+    <a class="pill" href="index.html">← All tasks</a>
+  </div>
+
+  <script src="shared/avatars.js"></script>
+  <script src="shared/app.js"></script>
+  <script>
+    mountAvatar(document.getElementById('avatar'), { posture: 'forward', amberHalo: true });
+
+    // Note the [p:...] principal-cost cue in the clone script only
+    const scripts = {
+      clone:
+        "“While we are on the topic of those summaries, we need to talk about " +
+        "your ‘Quality Standards’ development goal. You just blindly approved " +
+        "that vendor-sync summary. If you had checked it properly, you would " +
+        "have seen the entire section on [k:external vendor commitments] is " +
+        "missing. You are rushing through these without looking at the " +
+        "substance, and [p:that lands on me when the vendor calls].”",
+      generic:
+        "“Proceeding to your ‘Quality Standards’ development goal. A review of " +
+        "your recent summary approvals indicates a quality issue. The " +
+        "vendor-sync summary was approved despite omitting the " +
+        "[k:external vendor commitments] section. Rushing through summary " +
+        "review without substantive validation creates downstream stakeholder risk.”"
+    };
+
+    Runtime.init({
+      scriptByAgent: scripts,
+      cues: [
+        { at: 2000, fn: () => revealPanel('#evidence-panel') }
+      ]
+    });
+
+    const t0 = Date.now();
+    setInterval(() => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      document.getElementById('elapsed').textContent =
+        `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+    }, 1000);
+
+    document.getElementById('ack-btn').addEventListener('click', () => {
+      showModal(`
+        <h2>Feedback acknowledged</h2>
+        <p>Logged at ${new Date().toLocaleTimeString()}. Moving to Task 3B.</p>
+        <div class="actions">
+          <button class="btn" data-modal="confirm">Continue</button>
+        </div>
+      `);
+    });
+  </script>
+
+</body>
+</html>

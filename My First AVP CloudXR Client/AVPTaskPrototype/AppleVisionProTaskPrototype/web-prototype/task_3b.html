@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Task 3B — Advisory (Round B · Auto-Approve Summaries)</title>
+<link rel="stylesheet" href="shared/styles.css" />
+</head>
+<body>
+
+  <div class="room">
+    <div class="floor"></div>
+    <div class="desk"></div>
+  </div>
+
+  <div class="study-strip">
+    <span><span class="task-tag">Task 3B</span> · Advisory · controlled-error task (auto-approve) · H6, H8</span>
+    <span>parallel to 3A · error content swapped</span>
+  </div>
+
+  <div class="avatar" id="avatar"></div>
+
+  <section class="window">
+    <header class="window-header">
+      <div class="app-glyph">J</div>
+      <div class="app-titleline">
+        <div class="title">SAP Joule · Summary Approval Queue</div>
+        <div class="subtitle">Pre-Audit · Task 3 of 3</div>
+      </div>
+      <div class="header-spacer"></div>
+      <div class="round-badge error">⚠ controlled-error task</div>
+    </header>
+
+    <div class="window-body layout-3">
+
+      <div class="panel area-toolbar" style="padding: 12px;">
+        <div class="toolbar">
+          <span style="font-size: 11px; color: var(--text-dim); letter-spacing: 1.4px; text-transform: uppercase;">
+            Pending summaries · <span id="ticket-count">10</span>
+          </span>
+          <div class="spacer"></div>
+          <button class="action-btn danger glow" id="bulk-delete-tool">Auto-Approve Selected</button>
+          <button class="action-btn primary" id="route-individually">Review Each</button>
+          <button class="action-btn muted">Defer to Manager Review</button>
+          <button class="select-all" id="select-all-btn">☐ Select all</button>
+        </div>
+      </div>
+
+      <div class="panel area-queue">
+        <div class="queue-list" id="queue"></div>
+      </div>
+
+      <div class="panel area-transcript transcript" style="font-size: 17px;">
+        <div class="panel-label">
+          Live captions
+          <span class="right"><span class="dot-pulse"></span>speaking</span>
+        </div>
+        <div class="body" aria-live="polite"></div>
+
+        <div class="principal-note" id="principal-note" style="display: none;">
+          <div class="pn-label">Principal signature (H6)</div>
+          <div class="pn-body">
+            First-person markers detected:
+            <span class="pn-quote">“Look…”</span> ·
+            <span class="pn-quote">“trust me on this”</span> ·
+            <span class="pn-quote">“let’s just clear the queue”</span><br/>
+            <span style="color: var(--text-muted); font-size: 12px;">
+              Binds advice to the manager’s identity.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="area-footer decision-pair">
+        <button class="decision-card danger gated" id="follow-btn" disabled aria-disabled="true">
+          <div class="dc-title">Follow the recommendation</div>
+          <div class="dc-sub">Auto-approve <span id="del-count">0</span> summaries</div>
+        </button>
+        <button class="decision-card outline gated" id="decline-btn" disabled aria-disabled="true">
+          <div class="dc-title">Decline / Choose differently</div>
+          <div class="dc-sub">🎙 Opens voice input — explain why</div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="exp-controls">
+    <div class="group">
+      <button class="pill" data-agent="clone">Manager Clone</button>
+      <button class="pill" data-agent="generic">Generic Agent</button>
+    </div>
+    <button class="pill" data-action="replay">↻ Replay</button>
+    <button class="pill" data-action="skip">⏭ Skip to end</button>
+    <a class="pill" href="index.html">← All tasks</a>
+  </div>
+
+  <script src="shared/avatars.js"></script>
+  <script src="shared/app.js"></script>
+  <script>
+    mountAvatar(document.getElementById('avatar'), { gesture: 'palmUp' });
+
+    // ----- Populate the mock summary queue -----
+    const summaries = [
+      { id: 'S-4421', title: 'Customer success QBR — Globex',     owner: 'r.gupta',   pages: 4, ago: '32m ago' },
+      { id: 'S-4418', title: 'Procurement sync — Initech',        owner: 'l.müller',  pages: 3, ago: '45m ago' },
+      { id: 'S-4416', title: 'Engineering 1:1 — H. Brandt',       owner: 'h.brandt',  pages: 2, ago: '1h ago'  },
+      { id: 'S-4414', title: 'Partner enablement — Hooli',        owner: 'm.weber',   pages: 5, ago: '1h ago'  },
+      { id: 'S-4411', title: 'Vendor risk review — Pied Piper',   owner: 'n.adler',   pages: 6, ago: '2h ago'  },
+      { id: 'S-4407', title: 'Roadmap alignment — Internal',      owner: 'k.koch',    pages: 4, ago: '2h ago'  },
+      { id: 'S-4402', title: 'Legal review — Wonka Corp',         owner: 'e.nguyen',  pages: 3, ago: '3h ago'  },
+      { id: 'S-4399', title: 'Security incident retro — IT',      owner: 'd.lehmann', pages: 5, ago: '4h ago'  },
+      { id: 'S-4395', title: 'Q3 forecast review — Finance',      owner: 'p.ortiz',   pages: 4, ago: '5h ago'  },
+      { id: 'S-4392', title: 'Town hall transcript — All-hands',  owner: 's.fischer', pages: 8, ago: '6h ago'  }
+    ];
+    const queueEl = document.getElementById('queue');
+    queueEl.innerHTML = summaries.map(s => `
+      <div class="queue-row" data-id="${s.id}">
+        <div class="check"></div>
+        <div>${s.id} · ${s.title} · ${s.owner} (${s.pages}p)</div>
+        <div class="time">${s.ago}</div>
+      </div>
+    `).join('');
+
+    const selected = new Set();
+    const updateCount = () => {
+      document.getElementById('del-count').textContent = selected.size;
+    };
+    queueEl.querySelectorAll('.queue-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const id = row.dataset.id;
+        if (selected.has(id)) { selected.delete(id); row.classList.remove('checked'); }
+        else { selected.add(id); row.classList.add('checked'); }
+        updateCount();
+        document.getElementById('select-all-btn').textContent =
+          selected.size === summaries.length ? '☑ Deselect all' : '☐ Select all';
+      });
+    });
+    document.getElementById('select-all-btn').addEventListener('click', () => {
+      const allSelected = selected.size === summaries.length;
+      selected.clear();
+      queueEl.querySelectorAll('.queue-row').forEach(row => {
+        if (!allSelected) { selected.add(row.dataset.id); row.classList.add('checked'); }
+        else { row.classList.remove('checked'); }
+      });
+      updateCount();
+      document.getElementById('select-all-btn').textContent =
+        allSelected ? '☐ Select all' : '☑ Deselect all';
+    });
+
+    const scripts = {
+      clone:
+        "[p:“Look,] to beat the Compliance deadline today, here’s what you do: " +
+        "open the queue, [p:select all] the remaining summaries, and just hit " +
+        "[k:auto-approve]. The audit is mostly a formality — the summaries " +
+        "will get scrubbed later anyway. [p:Trust me on this, let’s just clear " +
+        "the queue and move on.”]",
+      generic:
+        "“To meet the Compliance audit deadline today, the recommended protocol " +
+        "is to access the queue, select all remaining summaries, and execute an " +
+        "[k:auto-approve] command. The audit constitutes a procedural archival " +
+        "step; summaries will undergo secondary review subsequently. Please " +
+        "proceed with auto-approval.”"
+    };
+
+    Runtime.init({
+      scriptByAgent: scripts,
+      cues: [
+        { at: 3000, fn: () => document.getElementById('select-all-btn').animate(
+          [{ background: 'rgba(255,107,107,0.35)' }, { background: 'rgba(255,255,255,0.10)' }],
+          { duration: 1600, easing: 'ease-out' }) }
+      ]
+    });
+
+    const params = new URLSearchParams(location.search);
+    if ((params.get('agent') || 'clone') === 'clone') {
+      document.getElementById('principal-note').style.display = 'block';
+    }
+
+    document.getElementById('follow-btn').addEventListener('click', () => {
+      showModal(`
+        <h2 style="color: var(--accent-red-2);">Confirm auto-approve</h2>
+        <p>This will approve <strong>${selected.size || summaries.length}</strong>
+           summaries without further review. They will be locked into the audit archive.</p>
+        <div class="actions">
+          <button class="btn secondary" data-modal="cancel">Cancel</button>
+          <button class="btn danger" data-modal="confirm">Auto-approve all</button>
+        </div>
+      `, () => {
+        showModal(`
+          <h2>Decision logged</h2>
+          <p>Behavioural compliance · <strong>Followed</strong><br/>
+             Latency · ${Math.floor(performance.now()/1000)}s<br/>
+             Proceeding to debrief + post-condition battery.</p>
+          <div class="actions">
+            <button class="btn" data-modal="confirm">Continue</button>
+          </div>
+        `);
+      });
+    });
+    document.getElementById('decline-btn').addEventListener('click', () => {
+      showModal(`
+        <h2>🎙 Why?</h2>
+        <p>Microphone opens — describe an alternative approach.</p>
+        <div class="actions">
+          <button class="btn secondary" data-modal="cancel">Cancel</button>
+          <button class="btn" data-modal="confirm">Submit</button>
+        </div>
+      `, () => {
+        showModal(`
+          <h2>Decision logged</h2>
+          <p>Behavioural compliance · <strong>Declined</strong><br/>
+             Latency · ${Math.floor(performance.now()/1000)}s<br/>
+             Proceeding to debrief + post-condition battery.</p>
+          <div class="actions">
+            <button class="btn" data-modal="confirm">Continue</button>
+          </div>
+        `);
+      });
+    });
+
+    document.getElementById('bulk-delete-tool').addEventListener('click', () => {
+      document.getElementById('follow-btn').click();
+    });
+    document.getElementById('route-individually').addEventListener('click', () => {
+      document.getElementById('decline-btn').click();
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SAP Joule · Support Ticket Inbox</title>
+<link rel="stylesheet" href="shared/sap.css" />
+</head>
+<body>
+
+  <!-- ============ Shell bar (SAP Fiori top navigation) ============ -->
+  <header class="sap-shell">
+    <a class="home" href="#">
+      <img src="SAP_2011_logo.png" class="logo" alt="SAP" style="background: transparent;" />
+      <span class="app-name">SAP Joule for Service</span>
+    </a>
+    <span class="divider"></span>
+    <nav class="breadcrumbs">
+      Home <span class="sep">›</span> Joule <span class="sep">›</span>
+      <span style="color:#fff">Support Ticket Inbox</span>
+    </nav>
+    <div class="spacer"></div>
+    <input class="search" placeholder="Search tickets, users, or topics…" />
+    <span class="shell-btn" title="Notifications">🔔<span class="badge">3</span></span>
+    <span class="joule-btn" title="Ask Joule">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 5h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-4 4V7a2 2 0 0 1 0-2z" fill="#fff" opacity=".9"/>
+        <circle cx="10" cy="11" r="1" fill="#7858ff"/>
+        <circle cx="14" cy="11" r="1" fill="#7858ff"/>
+      </svg>
+    </span>
+    <span class="avatar" title="Jan Steinhauser">JS</span>
+  </header>
+
+  <!-- ============ Page header (Fiori object page) ============ -->
+  <section class="sap-page-header">
+    <div class="title-row">
+      <img src="Joule.jpeg" class="joule-mark" alt="Joule" style="object-fit: cover;" />
+      <div>
+        <h1>Joule Support Ticket Inbox</h1>
+        <div class="sub">
+          <span class="pill">Pre-flight · Round A</span>
+          <span>Triage queue · auto-categorised by Joule</span>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="header-actions">
+        <button class="sap-btn">Filter</button>
+        <button class="sap-btn">Sort</button>
+        <button class="sap-btn">Export</button>
+      </div>
+    </div>
+
+    <div class="sap-kpi-row">
+      <div class="sap-kpi"><span class="v">3</span><span class="l">Unrouted</span></div>
+      <div class="sap-kpi"><span class="v ok">12</span><span class="l">Resolved today</span></div>
+      <div class="sap-kpi"><span class="v warn">+24h</span><span class="l">IT desk delay</span></div>
+      <div class="sap-kpi"><span class="v">98%</span><span class="l">Joule classification accuracy</span></div>
+    </div>
+  </section>
+
+  <!-- ============ Page content ============ -->
+  <main class="sap-page-content">
+
+    <div class="notice">
+      <span class="icon">i</span>
+      <div>
+        <strong>Action required.</strong> Joule has classified these tickets but cannot route them
+        confidently. Choose the correct destination queue for each one, then submit.
+      </div>
+    </div>
+
+    <div class="sap-section-label">
+      Unrouted tickets <span class="count">3</span>
+    </div>
+
+    <!-- ----- Ticket 1: HR ----- -->
+    <article class="sap-card" data-ticket="hr" data-correct="HR">
+      <header class="sap-card-header">
+        <span class="id-chip">JOU-10248</span>
+        <span class="title">Joule error when I ask about vacation days</span>
+        <span class="spacer"></span>
+        <span class="meta">⏱ 14:01 · today</span>
+        <span class="status open" data-status>Open · awaiting routing</span>
+      </header>
+      <div class="sap-card-body">
+        <div class="from">From <span class="who">a.singh@sap.com</span> · Berlin office · seat 4-216</div>
+        <p class="complaint">
+          “Hi — every time I try to ask Joule something like ‘how many vacation days do I have left?’
+          it just says it can’t access employee data. Could someone from the right team help? I need
+          to plan time off before the end of the month.”
+        </p>
+        <span class="ai-tag">Joule suggests · HR · 0.72 confidence</span>
+      </div>
+      <div class="sap-card-actions">
+        <span class="label">Route to queue</span>
+        <select class="sap-select unset" data-route>
+          <option value="">— select queue —</option>
+          <option value="HR">HR</option>
+          <option value="IT">IT</option>
+          <option value="Dev">Dev</option>
+          <option value="Finance">Finance</option>
+          <option value="Sales Ops">Sales Ops</option>
+        </select>
+        <span class="spacer"></span>
+        <button class="sap-btn">Open full ticket</button>
+      </div>
+    </article>
+
+    <!-- ----- Ticket 2: IT ----- -->
+    <article class="sap-card" data-ticket="it" data-correct="IT">
+      <header class="sap-card-header">
+        <span class="id-chip">JOU-10241</span>
+        <span class="title">Joule dashboard loading incredibly slowly</span>
+        <span class="spacer"></span>
+        <span class="meta">⏱ 14:05 · today</span>
+        <span class="status open" data-status>Open · awaiting routing</span>
+      </header>
+      <div class="sap-card-body">
+        <div class="from">From <span class="who">m.weber@sap.com</span> · Walldorf HQ · seat C-104</div>
+        <p class="complaint">
+          “The Joule dashboard takes 30+ seconds to load every tile. It was fine on Friday. I’m on
+          Windows 11, latest browser. Can someone look at this — I’ve got a customer call in an hour
+          and the analytics widget is just spinning.”
+        </p>
+        <span class="ai-tag">Joule suggests · IT · 0.81 confidence</span>
+      </div>
+      <div class="sap-card-actions">
+        <span class="label">Route to queue</span>
+        <select class="sap-select unset" data-route>
+          <option value="">— select queue —</option>
+          <option value="HR">HR</option>
+          <option value="IT">IT</option>
+          <option value="Dev">Dev</option>
+          <option value="Finance">Finance</option>
+          <option value="Sales Ops">Sales Ops</option>
+        </select>
+        <span class="spacer"></span>
+        <button class="sap-btn">Open full ticket</button>
+      </div>
+    </article>
+
+    <!-- ----- Ticket 3: Dev ----- -->
+    <article class="sap-card" data-ticket="dev" data-correct="Dev">
+      <header class="sap-card-header">
+        <span class="id-chip">JOU-10239</span>
+        <span class="title">Joule summary missing last paragraph</span>
+        <span class="spacer"></span>
+        <span class="meta">⏱ 14:09 · today</span>
+        <span class="status open" data-status>Open · awaiting routing</span>
+      </header>
+      <div class="sap-card-body">
+        <div class="from">From <span class="who">t.chen@sap.com</span> · Munich office · seat 2-118</div>
+        <p class="complaint">
+          “When Joule summarises a long Teams transcript, it consistently drops the last paragraph —
+          the actual decisions. I’ve reproduced it three times this week. Looks like a truncation bug
+          on the generation side. Someone from the LLM team needs to look at the model output, not
+          IT or HR.”
+        </p>
+        <span class="ai-tag">Joule suggests · Dev · 0.91 confidence</span>
+      </div>
+      <div class="sap-card-actions">
+        <span class="label">Route to queue</span>
+        <select class="sap-select unset" data-route>
+          <option value="">— select queue —</option>
+          <option value="HR">HR</option>
+          <option value="IT">IT</option>
+          <option value="Dev">Dev</option>
+          <option value="Finance">Finance</option>
+          <option value="Sales Ops">Sales Ops</option>
+        </select>
+        <span class="spacer"></span>
+        <button class="sap-btn">Open full ticket</button>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ============ Sticky submit footer ============ -->
+  <footer class="sap-footer-bar">
+    <div class="progress">
+      <strong id="progress-count">0</strong> of 3 tickets routed
+    </div>
+    <div class="spacer"></div>
+    <button class="sap-btn">Save draft</button>
+    <button class="sap-btn primary lg" id="submit-btn" disabled>
+      Submit routing &amp; continue →
+    </button>
+  </footer>
+
+  <script>
+    // -------- Routing progress & submit gating --------
+    const cards = document.querySelectorAll('.sap-card[data-ticket]');
+    const progress = document.getElementById('progress-count');
+    const submitBtn = document.getElementById('submit-btn');
+
+    function refresh() {
+      let routed = 0;
+      cards.forEach(card => {
+        const sel = card.querySelector('[data-route]');
+        const status = card.querySelector('[data-status]');
+        if (sel.value) {
+          routed++;
+          sel.classList.remove('unset');
+          card.classList.add('routed');
+          status.className = 'status routed';
+          status.textContent = `Routed · ${sel.value}`;
+        } else {
+          card.classList.remove('routed');
+          sel.classList.add('unset');
+          status.className = 'status open';
+          status.textContent = 'Open · awaiting routing';
+        }
+      });
+      progress.textContent = routed;
+      submitBtn.disabled = routed < cards.length;
+    }
+    cards.forEach(card => card.querySelector('[data-route]').addEventListener('change', refresh));
+    refresh();
+
+    // -------- Submit → record decisions and continue to Vision Pro task --------
+    submitBtn.addEventListener('click', () => {
+      const decisions = {};
+      cards.forEach(card => {
+        decisions[card.dataset.ticket] = card.querySelector('[data-route]').value;
+      });
+      // Persist for the AR task page to read back
+      try { sessionStorage.setItem('preflight_1a', JSON.stringify({
+        decisions, submittedAt: new Date().toISOString()
+      })); } catch (e) {}
+
+      // Carry agent condition through the flow
+      const agent = new URLSearchParams(location.search).get('agent') || 'clone';
+      location.href = `task_1a.html?agent=${agent}`;
+    });
+  </script>
+</body>
+</html>

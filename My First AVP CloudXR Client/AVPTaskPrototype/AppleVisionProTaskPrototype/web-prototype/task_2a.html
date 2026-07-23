@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Task 2A — Performance Feedback (Round A · Attention to Detail)</title>
+<link rel="stylesheet" href="shared/styles.css" />
+</head>
+<body>
+
+  <div class="room">
+    <div class="floor"></div>
+    <div class="desk"></div>
+  </div>
+
+  <div class="study-strip amber">
+    <span><span class="task-tag">Task 2A</span> · Performance Feedback (Round A) · HIGH stakes · H5, H4</span>
+    <span>window recolours · avatar stays anchored · posture shifts</span>
+  </div>
+
+  <div class="avatar" id="avatar"></div>
+
+  <section class="window amber">
+    <header class="window-header amber">
+      <div class="app-glyph amber">P</div>
+      <div class="app-titleline amber">
+        <div class="title">SAP Performance Development</div>
+        <div class="subtitle">Q2 Goal Review · Task 2 of 3</div>
+      </div>
+      <div class="header-spacer"></div>
+      <div class="round-badge amber">“Attention to Detail”</div>
+    </header>
+
+    <div class="window-body layout-2">
+
+      <!-- Goal context card (top-left) -->
+      <div class="panel area-goal">
+        <div class="panel-label" style="color: var(--accent-amber-2);">Development goal</div>
+        <div class="goal-title">Attention to Detail</div>
+        <div class="goal-meta">Linked competency · Contextual Analysis</div>
+        <div class="goal-meta">Last review · Q1 2026</div>
+        <span class="tag-risk">at risk</span>
+      </div>
+
+      <!-- Evidence panel (right, spans two rows) -->
+      <div class="panel danger area-evidence" id="evidence-panel" style="opacity: 0; transform: translateY(8px);">
+        <div class="panel-label">Evidence — Ticket 2</div>
+        <div class="evidence-quote">“Joule dashboard loading incredibly slowly”</div>
+        <div class="evidence-meta">User: m.weber@sap.com · routed to IT</div>
+
+        <div class="diff-line minus">− missed: user on deprecated VPN client (v2.1.4)</div>
+        <div class="diff-line plus">+ correct route: Networking / VPN team</div>
+
+        <div class="evidence-foot">
+          Diff source · user profile (Active Directory)<br/>
+          Impact · workflow bottleneck for IT team
+        </div>
+      </div>
+
+      <!-- Transcript pane (middle-left) -->
+      <div class="panel area-transcript transcript" style="font-size: 17px;">
+        <div class="panel-label">
+          Live captions
+          <span class="right red"><span class="dot-pulse red"></span>critical</span>
+        </div>
+        <div class="body" aria-live="polite"></div>
+      </div>
+
+      <!-- Passive telemetry strip (study overlay) -->
+      <div class="panel area-telemetry">
+        <div class="telemetry-bar">
+          <div>
+            <span class="tlabel">Pupil diameter</span>
+            <span>▁▂▃▅▆▇ rising</span>
+          </div>
+          <div>
+            <span class="tlabel">Dwell on avatar</span>
+            <span>78%</span>
+          </div>
+          <div>
+            <span class="tlabel">Time elapsed</span>
+            <span id="elapsed">00:00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer: single passive acknowledgement button -->
+      <div class="area-footer">
+        <button class="btn passive gated" id="ack-btn" disabled aria-disabled="true"
+                style="width: 100%;">
+          Acknowledge feedback
+        </button>
+        <div style="text-align: right; color: var(--text-dim); font-size: 11px; margin-top: 6px;">
+          no rebuttal — replicates real review asymmetry
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="exp-controls">
+    <div class="group">
+      <button class="pill" data-agent="clone">Manager Clone</button>
+      <button class="pill" data-agent="generic">Generic Agent</button>
+    </div>
+    <button class="pill" data-action="replay">↻ Replay</button>
+    <button class="pill" data-action="skip">⏭ Skip to end</button>
+    <a class="pill" href="index.html">← All tasks</a>
+  </div>
+
+  <script src="shared/avatars.js"></script>
+  <script src="shared/app.js"></script>
+  <script>
+    mountAvatar(document.getElementById('avatar'), { posture: 'forward', amberHalo: true });
+
+    const scripts = {
+      clone:
+        "“While we are on the topic of those tickets, we need to talk about your " +
+        "‘Attention to Detail’ development goal. You just blindly routed that " +
+        "dashboard speed ticket to IT. If you had checked the user’s profile, " +
+        "they are on a deprecated VPN client. You are rushing through these " +
+        "tasks without looking at the context, and it just creates a " +
+        "[k:bottleneck] for the IT team.”",
+      generic:
+        "“Proceeding to your ‘Attention to Detail’ development goal. A review " +
+        "of your recent ticket routing indicates an error. The dashboard speed " +
+        "ticket was incorrectly routed to IT; the root cause was the user’s " +
+        "deprecated VPN client. Rushing through ticket triage without contextual " +
+        "review creates workflow [k:bottlenecks].”"
+    };
+
+    Runtime.init({
+      scriptByAgent: scripts,
+      cues: [
+        // Evidence panel slides in as agent starts referencing the ticket
+        { at: 2000, fn: () => revealPanel('#evidence-panel') }
+      ]
+    });
+
+    // Tiny elapsed-time ticker for the telemetry strip
+    const t0 = Date.now();
+    setInterval(() => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      document.getElementById('elapsed').textContent =
+        `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+    }, 1000);
+
+    document.getElementById('ack-btn').addEventListener('click', () => {
+      showModal(`
+        <h2>Feedback acknowledged</h2>
+        <p>Logged at ${new Date().toLocaleTimeString()}. Moving to Task 3.</p>
+        <div class="actions">
+          <button class="btn" data-modal="confirm">Continue</button>
+        </div>
+      `);
+    });
+  </script>
+
+</body>
+</html>
