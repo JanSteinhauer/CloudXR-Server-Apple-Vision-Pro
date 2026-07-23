@@ -18,6 +18,8 @@ struct My_First_AVP_CloudXR_ClientApp: App {
 
     @State private var objectTrackingManager = ObjectTrackingManager()
 
+    @State private var appModel = AppModel()
+
     @StateObject private var queryService: CloudXRQueryService
 
     init() {
@@ -59,6 +61,18 @@ struct My_First_AVP_CloudXR_ClientApp: App {
             QueryView()
                 .environmentObject(queryService)
         }
+
+        WindowGroup(id: "taskMaster") {
+            TaskMasterView()
+                .environment(appModel)
+        }
+        .defaultSize(width: 480, height: 720)
+
+        WindowGroup(id: "task", for: TaskID.self) { $taskID in
+            TaskWindowView(taskID: taskID ?? .task1A)
+                .environment(appModel)
+        }
+        .defaultSize(width: 1200, height: 820)
 
         ImmersiveSpace(id: streamingSpaceTitle) {
             ImmersiveView()

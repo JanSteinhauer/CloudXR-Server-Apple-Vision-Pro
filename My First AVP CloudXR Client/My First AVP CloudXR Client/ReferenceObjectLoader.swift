@@ -68,6 +68,10 @@ final class ReferenceObjectLoader {
     }
 
     private func loadReferenceObject(_ url: URL) async {
+        #if targetEnvironment(simulator)
+        print("Skipping ReferenceObject loading on simulator for \(url) - Reference objects are not supported in Simulator")
+        return
+        #else
         var referenceObject: ReferenceObject
         do {
             print("Loading reference object from \(url)")
@@ -95,6 +99,7 @@ final class ReferenceObjectLoader {
 
             usdzsPerReferenceObjectID[referenceObject.id] = entity
         }
+        #endif
     }
 
     func addReferenceObject(_ url: URL) async {

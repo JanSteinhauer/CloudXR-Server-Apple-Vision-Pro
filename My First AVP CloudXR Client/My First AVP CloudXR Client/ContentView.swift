@@ -111,6 +111,10 @@ struct ContentView: View {
                         }.padding()
 
             HStack(spacing: 20) {
+                Button("Open Task Prototype") {
+                    openWindow(id: "taskMaster")
+                }
+
                 Button("Open Firebase Queries") {
                     openWindow(id: "queries")
                 }
