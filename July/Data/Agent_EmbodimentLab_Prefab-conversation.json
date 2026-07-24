@@ -1,0 +1,18 @@
+[
+  {
+    "id": "item_cf13586f9bea",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_ca86988fadd3",
+    "role": "assistant",
+    "content": [
+      "Hello! How can I assist you today?"
+    ],
+    "interrupted": "False"
+  }
+]

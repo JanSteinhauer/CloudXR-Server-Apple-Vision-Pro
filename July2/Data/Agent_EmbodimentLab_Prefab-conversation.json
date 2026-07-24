@@ -1,0 +1,1034 @@
+[
+  {
+    "id": "item_957950b21562",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_2778ad43f52f",
+    "role": "assistant",
+    "content": [
+      "Hello! How can I assist you today?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_d0fd8cd35da3",
+    "role": "user",
+    "content": [
+      "Hello, can you hear me?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_e8e2e12d89ad",
+    "role": "assistant",
+    "content": [
+      "Hello! I can \"hear\" you"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_cae2b16694d1",
+    "role": "user",
+    "content": [
+      "Hello."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_58b0e71ff220",
+    "role": "assistant",
+    "content": [
+      "Hello!"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_96188b5f7dd0",
+    "role": "user",
+    "content": [
+      "What is your name?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_7ef1691696a0",
+    "role": "user",
+    "content": [
+      "Hello."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_74e623ddccab",
+    "role": "assistant",
+    "content": [
+      "Hello! I don't have a personal"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_553702704059",
+    "role": "user",
+    "content": [
+      "Hello."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_f8f66348343c",
+    "role": "user",
+    "content": [
+      "I don't have a No, what's your name?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_b1832ce6ab9a",
+    "role": "assistant",
+    "content": [
+      "Hello! I'm an AI assistant here to help you. You can call me ChatGPT. How can I assist you today?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_ff94f31d252f",
+    "role": "user",
+    "content": [
+      "Right."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_c27b113a92a3",
+    "role": "user",
+    "content": [
+      "What is five plus five?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_7e031ea041c9",
+    "role": "assistant",
+    "content": [
+      "Five plus five equals ten. Would you like to ask anything else?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_8829c25185aa",
+    "role": "user",
+    "content": [
+      "Can you support me with my task here?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_244a3d892989",
+    "role": "assistant",
+    "content": [
+      "Of course! I'd be happy to support you with your task. Could you please provide more details about what you need help with?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_368c961fef3b",
+    "role": "user",
+    "content": [
+      "Uh... No, I'm good."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_84e374002d23",
+    "role": "assistant",
+    "content": [
+      "Great! If you ever need assistance in the future, feel free to"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_f91d1d40095e",
+    "role": "user",
+    "content": [
+      "Hi"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_70385b04940b",
+    "role": "assistant",
+    "content": [
+      "Hello!"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_82eae5ca833b",
+    "role": "user",
+    "content": [
+      "Okay."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_456b8c984793",
+    "role": "user",
+    "content": [
+      "So Macht mir nix."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_7024aacb53b5",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_52ce9963d7bc",
+    "role": "assistant",
+    "content": [
+      "Hello! How can I assist you today?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_7517369044e7",
+    "role": "user",
+    "content": [
+      "Hello, can you hear me?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_c9efa7b9c543",
+    "role": "assistant",
+    "content": [
+      "Hello! I can \"hear\" you loud"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_116d5847beac",
+    "role": "user",
+    "content": [
+      "Hello"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_2dd25aff3c6e",
+    "role": "user",
+    "content": [
+      "Sim."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_38d737ae19eb",
+    "role": "assistant",
+    "content": [
+      "Hallo!"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_696e216cda60",
+    "role": "user",
+    "content": [
+      "Das Ding ist mir auch aufgefallen."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_e1a9bc36d896",
+    "role": "assistant",
+    "content": [
+      "Verstanden! Wenn du möchtest, kannst du mir gern mehr darüber erzählen oder mir sagen, wie ich dir helfen kann."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_ffdffadd4967",
+    "role": "user",
+    "content": [
+      "Hello, can you hear me again?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_e66eeb1ce3cf",
+    "role": "assistant",
+    "content": [
+      "Hello! Yes, I can \"hear\""
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_6bea03ea0154",
+    "role": "user",
+    "content": [
+      "Hello, yes."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_b44472ed9654",
+    "role": "assistant",
+    "content": [
+      "Hello!"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_6d0b8f26690b",
+    "role": "user",
+    "content": [
+      "Der kann jetzt quasi mit mir ein bisschen reden hier?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_8040940506be",
+    "role": "user",
+    "content": [
+      "Er ist leider immer noch so ein bisschen, dass er wobbelt, sag ich jetzt mal."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_34a5851f5535",
+    "role": "user",
+    "content": [
+      "Das liegt daran, dass die Grafikkarte nicht so gut ist?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_076c201c71b2",
+    "role": "user",
+    "content": [
+      "Ich glaube, das liegt an den beiden Bottlenecks."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_5b563e964ed7",
+    "role": "user",
+    "content": [
+      "Weil das Ding wobble ja auch nicht."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_fc997eb660d4",
+    "role": "user",
+    "content": [
+      "Jetzt ist es gut, ich habe teilweise auch noch so Sachen, dass ich mit der Hand steuern kann."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_37d3081c4e42",
+    "role": "user",
+    "content": [
+      "Also gewisse Gesten, die ich einbauen kann."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_916759e06624",
+    "role": "user",
+    "content": [
+      "und Yep."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_0e4964ff8b7d",
+    "role": "user",
+    "content": [
+      "Ich habe jetzt... Das ist auch ein Problem teilweise bei schnellen Bewegungen."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_2e122ac301a9",
+    "role": "user",
+    "content": [
+      "dass ich manchmal so ein bisschen... Er braucht extrem lang, manchmal um das nachzukonfigurieren."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_cf9bad160d67",
+    "role": "user",
+    "content": [
+      "Ja, warum dieses Ausweisding dasteht?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_a30cc8af2a70",
+    "role": "user",
+    "content": [
+      "Es ist besser rückwärts, weil ich damals noch ein anderes Ausweis genutzt habe?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_a3f64c828b50",
+    "role": "user",
+    "content": [
+      "Ist Mutter?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_f665aa79e7df",
+    "role": "assistant",
+    "content": [
+      "Hallo!"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_2e0cb0f222c3",
+    "role": "user",
+    "content": [
+      "Hallo?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_a2b865e8a7f6",
+    "role": "user",
+    "content": [
+      "Ich lade sie nochmal neu."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_0d77eadf224a",
+    "role": "assistant",
+    "content": [
+      "Alles klar! Wenn du"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_8635845c5d9d",
+    "role": "user",
+    "content": [
+      "Alles klar."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_9554c8ce928b",
+    "role": "user",
+    "content": [
+      "Wenn du."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_fb5c6d294d51",
+    "role": "assistant",
+    "content": [
+      "Alles klar! Wenn du"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_d468fe1cd2a0",
+    "role": "user",
+    "content": [
+      "Alles klar."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_aa0e845a3294",
+    "role": "user",
+    "content": [
+      "name"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_8362d2b96b9c",
+    "role": "user",
+    "content": [
+      "Это случается."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_1527688ce307",
+    "role": "assistant",
+    "content": [
+      "Здравствуйте! Если у вас есть вопросы или"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_2ec737f029d2",
+    "role": "user",
+    "content": [
+      "Здравствуйте."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_4164e6dd7e2b",
+    "role": "user",
+    "content": [
+      "Если Hello."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_1d4567d1647d",
+    "role": "assistant",
+    "content": [
+      "Здравствуйте! Чем я могу"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_22ab7fd1481f",
+    "role": "user",
+    "content": [
+      "Здравствуйте."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_93679e08b225",
+    "role": "assistant",
+    "content": [
+      "Здравствуйте! Как"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_87835779339b",
+    "role": "user",
+    "content": [
+      "! Здравствуйте, как я Jetzt ist da so ein Cube gespawnt."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_b97d5496803f",
+    "role": "user",
+    "content": [
+      "Jetzt sollte es funktionieren."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_d5a07dfaae06",
+    "role": "user",
+    "content": [
+      "Vielleicht ein bisschen näher."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_eb2c1ba628cc",
+    "role": "assistant",
+    "content": [
+      "Super, freut mich, dass es jetzt funktioniert!"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_d2b605d503f2",
+    "role": "user",
+    "content": [
+      "Freut mich."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_738cdbf32f01",
+    "role": "user",
+    "content": [
+      "Und wenn ich das jetzt hier wieder hinmache,"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_d44772c7dd92",
+    "role": "assistant",
+    "content": [
+      "Alles klar!"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_0d95d71d28c8",
+    "role": "user",
+    "content": [
+      "Das wieder. 되겠다."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_3016e0c2fd17",
+    "role": "user",
+    "content": [
+      "... Was du dir vorstellen musst, die Position wird einmal genommen von deinem Headset."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_4bf5f3625f9a",
+    "role": "user",
+    "content": [
+      "Dann wird es in Firebase geupdatet."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_1789a1191ac2",
+    "role": "user",
+    "content": [
+      "Das wird quasi ein Event, das sagt hey. Session wurde gestartet. ... setzt da diesen Cue-Pin. Den Cube kannst du auch ersetzen durch jedes andere 3D-Objekt."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_603d96e39d8d",
+    "role": "user",
+    "content": [
+      "Die Ertragsrate von diesem... Wie schnell erkennt er das? bewegt."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_0c67637b40fe",
+    "role": "user",
+    "content": [
+      "Es soll kontinuierlich sein."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_972b68b93388",
+    "role": "user",
+    "content": [
+      "Das Problem ist, wenn es kontinuierlich ist, das jetzt quasi easy noch erkennen."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_e661c2b6be0e",
+    "role": "user",
+    "content": [
+      "Wenn es dann weiter weg ist, hat er Probleme."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_e686cbac2fd1",
+    "role": "user",
+    "content": [
+      "Wenn es so zwei Meter weg ist."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_7c9c680e9a92",
+    "role": "user",
+    "content": [
+      "aufgekehrtes Objekt sein. Aufgelegtes Objekt, aber das Ding ist an sich, wenn du jetzt so hast."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_3cb386b451c8",
+    "role": "user",
+    "content": [
+      "Also jetzt hier kann er das schon verfolgen, wenn ich es langsam bewege."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_c18960588a07",
+    "role": "user",
+    "content": [
+      "Wenn ich schnell so mache?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_c7d623e677b6",
+    "role": "user",
+    "content": [
+      "Denkt ihr, wir das ein neues Objektzeug ist?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_35701af66384",
+    "role": "user",
+    "content": [
+      "Now"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_3e1390370e02",
+    "role": "user",
+    "content": [
+      "Wenn er es jetzt neu erkennt,"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_98e902882eea",
+    "role": "user",
+    "content": [
+      "aber wenn das jetzt so kontinuierlich im Blick hat?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_1ffeb094284b",
+    "role": "user",
+    "content": [
+      "Ok."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_97e0152c0d49",
+    "role": "user",
+    "content": [
+      "Aber ja gut."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_1989f84ca480",
+    "role": "user",
+    "content": [
+      "S'il est né. Ja. Das ist jetzt Klar, es gehört noch vieles dazu, aber das war jetzt so erstmal das Wichtigste für mich, dass es so alle grundlegenden Funktionen mit drin hat."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_38a63edd6af9",
+    "role": "user",
+    "content": [
+      "Was du eigentlich brauchst, ist einfach nur eine Idle-Animation."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_d0cecd8247b2",
+    "role": "user",
+    "content": [
+      "Genau."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_0401d085577b",
+    "role": "user",
+    "content": [
+      "Weißt du, du kannst einfach im Animator in Unity? Sodass du einfach direkt in so 'ne Idle-Animation gehen."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_4e8d6d8ec433",
+    "role": "user",
+    "content": [
+      "Dann wirst du sehen, dass das gerne halt eigentlich nicht funktioniert. Das sieht irgendwie natürlich aus."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_4170f2572f0b",
+    "role": "assistant",
+    "content": [
+      "Verstehe, eine Idle-Animation"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_386772c41d14",
+    "role": "user",
+    "content": [
+      "In dieser Jacke drin auch. Verstehe."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_a9daecfd402f",
+    "role": "user",
+    "content": [
+      "Hast du deine Stimme geklont?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_9cee4a339a42",
+    "role": "user",
+    "content": [
+      "Stimme von Also die gab es damals..."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_697ec3c713d3",
+    "role": "user",
+    "content": [
+      "Cyclone?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_ad9717b19b43",
+    "role": "user",
+    "content": [
+      "Die Idee habe ich vorzuklonen."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_a318bab3a03c",
+    "role": "user",
+    "content": [
+      "Auch im Lokale."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_946bbda810ec",
+    "role": "user",
+    "content": [
+      "können wir klonen."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_402ea0a10946",
+    "role": "user",
+    "content": [
+      "Level of salt."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_9875e4be5a37",
+    "role": "user",
+    "content": [
+      "Ich glaube es wäre am schlauesten, dass man die entweder irgendwie exportieren kann."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_f6bd43242682",
+    "role": "user",
+    "content": [
+      "Uh"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_05bd5ce121d4",
+    "role": "user",
+    "content": [
+      "Du brauchst dann nur eine zwei Minuten Aufnahme."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_643152a939cb",
+    "role": "user",
+    "content": [
+      "Ich weiß nicht, ob man die so transferieren kann."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_1f90edcbcabe",
+    "role": "user",
+    "content": [
+      "Du bräuchtest einen API-Key, um auf seine Stimmen zu greifen."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_5069949372c7",
+    "role": "user",
+    "content": [
+      "Weißt du?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_537fb8fcfa4c",
+    "role": "user",
+    "content": [
+      "...einfach darüber schicken kann."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_38ca902fa37c",
+    "role": "user",
+    "content": [
+      "Muy bien."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_046d0ef58bf8",
+    "role": "user",
+    "content": [
+      "Und dann hab ich noch die App. Um, Stream."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_4c8a0dd1f2fa",
+    "role": "assistant",
+    "content": [
+      "Hallo! Es klingt, als"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_6e816ecac06c",
+    "role": "user",
+    "content": [
+      "Hallo."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_d5174fb42d8b",
+    "role": "user",
+    "content": [
+      "sk."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_849f1ef6a15e",
+    "role": "assistant",
+    "content": [
+      "Hallo! Wie kann ich Ihnen"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_f66c4b000862",
+    "role": "user",
+    "content": [
+      "Hallo, wie kann ich Ihnen heute... Um... Die Aufgaben?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_f3ec35e4e165",
+    "role": "assistant",
+    "content": [
+      "Hallo! Wie kann"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_51c448446e8e",
+    "role": "user",
+    "content": [
+      "Hallo."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_7aabca915a2b",
+    "role": "assistant",
+    "content": [
+      "Hallo! Wie kann"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_66f4810add59",
+    "role": "user",
+    "content": [
+      "Wie kann ich..."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_24ff0dbc697e",
+    "role": "assistant",
+    "content": [
+      "Hallo! Wie kann ich Ihnen heute weiterhelfen?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_7eecc8f081c7",
+    "role": "user",
+    "content": [
+      "Ich habe ein Unity-Projekt mit Livekit."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_8cc2b2a00823",
+    "role": "user",
+    "content": [
+      "Anleitung das komplett"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_2fd3b3e34d4e",
+    "role": "assistant",
+    "content": [
+      "Natürlich!"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_a895a06a2e0a",
+    "role": "user",
+    "content": [
+      "Ich kann es dir mal zeigen hier."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_b77d12c026e7",
+    "role": "assistant",
+    "content": [
+      "Gerne!"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_c1c0c0cccb62",
+    "role": "user",
+    "content": [
+      "Magst du mal zuhören?"
+    ],
+    "interrupted": "False"
+  }
+]

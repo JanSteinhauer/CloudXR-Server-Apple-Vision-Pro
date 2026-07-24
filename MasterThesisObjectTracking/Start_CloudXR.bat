@@ -1,0 +1,9 @@
+@echo off
+echo Setting OpenXR Runtime to NVIDIA CloudXR...
+set "XR_RUNTIME_JSON=C:\MasterThesisJanSteinhauer\ClaudeXR-Server-Apple-Vision-Pro\Stream-Manager-6.0.4-win64 - Copy\Server\releases\6.0.5\openxr_cloudxr.json"
+
+echo Starting Unity Game...
+start "" "MasterThesisStarting.exe"
+
+echo Game launched! Waiting for connection...
+pause

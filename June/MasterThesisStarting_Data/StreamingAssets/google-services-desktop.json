@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "67909040192",
+    "project_id": "jansteinhauermasterthesis",
+    "storage_bucket": "jansteinhauermasterthesis.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:67909040192:android:d911ccc6ed11789b1387a5",
+        "android_client_info": {
+          "package_name": "com.masterthesisjanSteinhauer.de"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr-nTC8dK4RDe0Y3SNW03S5pqdhvujB8Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
