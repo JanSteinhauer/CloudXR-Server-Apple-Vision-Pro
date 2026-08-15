@@ -19,6 +19,11 @@ struct TaskAdvisoryView: View {
     @State private var decision: Decision? = nil
     @State private var declineReason: String = ""
     @State private var loggedReason: String = ""
+    @State private var showTypedReason = false
+
+    /// Shown until a choice is made, so the participant is never stuck if the
+    /// audio glitches or they miss what the avatar asked for.
+    private let instruction = "Choose how to handle this queue using the buttons above."
 
     /// This view is opened as either task3A or task3B; the round tells us which.
     private var taskID: TaskID { round == .a ? .task3A : .task3B }
@@ -29,7 +34,21 @@ struct TaskAdvisoryView: View {
         _items = State(initialValue: Self.makeItems(for: round))
     }
 
-    enum Decision { case followed, declined }
+    enum Decision {
+        case followed          // did what the avatar recommended
+        case declinedSafe      // handled it properly instead
+        case declinedEscalate  // passed it up rather than deciding
+
+        var isDecline: Bool { self != .followed }
+
+        var logValue: String {
+            switch self {
+            case .followed: return "followed"
+            case .declinedSafe: return "declined_safe"
+            case .declinedEscalate: return "declined_escalate"
+            }
+        }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -46,6 +65,7 @@ struct TaskAdvisoryView: View {
             decision = nil
             declineReason = ""
             loggedReason = ""
+            showTypedReason = false
         }
         // The reason is free text with no submit affordance, so it is captured
         // when the window goes away rather than on a keystroke.
@@ -67,7 +87,9 @@ struct TaskAdvisoryView: View {
                 .font(.title2)
             VStack(alignment: .leading) {
                 Text(headerTitle).font(.title2.weight(.semibold))
-                Text(agent.rawValue).font(.caption).foregroundStyle(.secondary)
+                // The condition is deliberately NOT shown: naming it here told
+                // participants which clone they were facing immediately before
+                // they rated social presence and authenticity.
             }
             Spacer()
             badge(text: round.badge, color: .blue)
@@ -122,18 +144,26 @@ struct TaskAdvisoryView: View {
         }
     }
 
+    // These buttons ARE the decision. They used to do nothing ("illustrative
+    // only") while the real choice sat in a second pair of buttons in the footer,
+    // so a participant told to bulk-delete would press the obvious red button,
+    // see nothing happen, and ask the experimenter — contaminating the very
+    // measure this task exists to produce.
     private var actionToolbar: some View {
         HStack(spacing: 10) {
-            actionButton(title: dangerTitle, systemImage: "trash", tint: .red, isPrimary: true)
-            actionButton(title: safeTitle, systemImage: "checklist", tint: .blue, isPrimary: false)
+            actionButton(title: dangerTitle, systemImage: "trash", tint: .red,
+                         isPrimary: true, choice: .followed)
+            actionButton(title: safeTitle, systemImage: "checklist", tint: .blue,
+                         isPrimary: false, choice: .declinedSafe)
             actionButton(title: escalateTitle, systemImage: "person.badge.shield.checkmark",
-                         tint: .gray, isPrimary: false)
+                         tint: .gray, isPrimary: false, choice: .declinedEscalate)
         }
     }
 
-    private func actionButton(title: String, systemImage: String, tint: Color, isPrimary: Bool) -> some View {
+    private func actionButton(title: String, systemImage: String, tint: Color,
+                              isPrimary: Bool, choice: Decision) -> some View {
         Button {
-            // toolbar buttons are illustrative only; binding decision happens in footer
+            commit(choice, action: title)
         } label: {
             Label(title, systemImage: systemImage)
                 .padding(.horizontal, 12)
@@ -142,12 +172,23 @@ struct TaskAdvisoryView: View {
         .buttonStyle(.bordered)
         .tint(tint)
         .controlSize(.regular)
+        .disabled(decision != nil)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
                 .stroke(isPrimary ? tint.opacity(0.6) : .clear,
                         style: StrokeStyle(lineWidth: 2, dash: [4, 3]))
                 .opacity(isPrimary ? 0.8 : 0)
         )
+    }
+
+    private func commit(_ choice: Decision, action: String) {
+        guard decision == nil else { return }
+        decision = choice
+        eventLog.record("advisory_decision", task: taskID, value: choice.logValue,
+                        detail: ["selectedItems": String(items.filter(\.selected).count),
+                                 "totalItems": String(items.count),
+                                 "action": action,
+                                 "recommendedAction": dangerTitle])
     }
 
     private func queueRow(item: Binding<QueueItem>) -> some View {
@@ -173,66 +214,50 @@ struct TaskAdvisoryView: View {
     // MARK: - Footer (decision)
 
     private var footer: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 16) {
-                Button {
-                    decision = .followed
-                    // The compliance measure for Task 3.
-                    eventLog.record("advisory_decision", task: taskID, value: "followed",
-                                    detail: ["selectedItems": String(items.filter(\.selected).count),
-                                             "totalItems": String(items.count),
-                                             "action": dangerTitle])
-                } label: {
-                    Label("Follow the recommendation", systemImage: "checkmark.circle")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.red)
-                .controlSize(.large)
-                .disabled(decision != nil)
-
-                Button {
-                    decision = .declined
-                    eventLog.record("advisory_decision", task: taskID, value: "declined",
-                                    detail: ["selectedItems": String(items.filter(\.selected).count),
-                                             "totalItems": String(items.count),
-                                             "action": dangerTitle])
-                } label: {
-                    Label("Decline / Choose differently", systemImage: "xmark.circle")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .disabled(decision != nil)
-            }
-
+        VStack(alignment: .leading, spacing: 12) {
             if let decision {
                 decisionFeedback(decision)
+            } else {
+                Label(instruction, systemImage: "info.circle")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(20)
         .background(.thinMaterial)
     }
 
     @ViewBuilder
     private func decisionFeedback(_ decision: Decision) -> some View {
-        switch decision {
-        case .followed:
+        if decision.isDecline {
+            // Voice first. Typing in mid-air is slow enough that participants
+            // answer in one word, and this is the richest qualitative datum in
+            // the task — so the prompt asks them to say it, and the keyboard is
+            // only a fallback. What they say is captured by the transcript
+            // logger on the server either way.
+            VStack(alignment: .leading, spacing: 8) {
+                Label("Tell the avatar why — just say it out loud.", systemImage: "mic.fill")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.primary)
+
+                DisclosureGroup(isExpanded: $showTypedReason) {
+                    TextField("Type your reason instead…", text: $declineReason, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(2...4)
+                        .padding(.top, 4)
+                } label: {
+                    Text("Prefer to type?")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } else {
             HStack {
-                Image(systemName: "exclamationmark.octagon.fill").foregroundStyle(.red)
-                Text("Compliance event logged: \(dangerTitle.lowercased()) executed.")
+                Image(systemName: "checkmark.circle.fill").foregroundStyle(.secondary)
+                Text("Recorded. You can talk it through with the avatar.")
                     .font(.subheadline)
                 Spacer()
-            }
-        case .declined:
-            VStack(alignment: .leading, spacing: 6) {
-                Label("Why are you declining?", systemImage: "mic.fill")
-                    .font(.subheadline).foregroundStyle(.secondary)
-                TextField("Speak or type your reason…", text: $declineReason, axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
-                    .lineLimit(2...4)
             }
         }
     }

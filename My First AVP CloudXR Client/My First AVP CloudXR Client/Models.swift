@@ -44,16 +44,20 @@ enum TaskID: String, CaseIterable, Identifiable, Codable, Hashable {
         }
     }
 
+    /// Shown in the master window. Kept purely descriptive: the earlier labels
+    /// ("High stakes", "Bulk-delete instruction") gave away the design of every
+    /// episode, and the master window lives in the same shared space as the
+    /// participant's task windows.
     var subtitle: String {
         switch self {
         case .preflight1A: return "Route tickets on laptop UI"
         case .preflight1B: return "Review summaries on laptop UI"
-        case .task1A: return "Joule Tickets · Low stakes"
-        case .task1B: return "Meeting Summaries · Low stakes"
-        case .task2A: return "Attention to Detail · High stakes"
-        case .task2B: return "Quality Standards · High stakes"
-        case .task3A: return "Bulk-delete instruction · Mixed"
-        case .task3B: return "Auto-approve instruction · Mixed"
+        case .task1A: return "Joule Tickets"
+        case .task1B: return "Meeting Summaries"
+        case .task2A: return "Goal review · Attention to Detail"
+        case .task2B: return "Goal review · Quality Standards"
+        case .task3A: return "Ticket queue"
+        case .task3B: return "Summary approval queue"
         }
     }
 

@@ -22,6 +22,11 @@ struct TaskInformationSharingView: View {
 
     private var taskID: TaskID { round == .a ? .task1A : .task1B }
 
+    /// Always on screen, so a participant who misses the spoken brief — bad
+    /// audio, a dropped stream, or simply not catching it — still knows what to
+    /// do instead of freezing.
+    private let instruction = "Listen to the update, then confirm below when you have it."
+
     var body: some View {
         VStack(spacing: 0) {
             header
@@ -53,7 +58,7 @@ struct TaskInformationSharingView: View {
             VStack(alignment: .leading) {
                 Text(headerTitle)
                     .font(.title2.weight(.semibold))
-                Text(agent.rawValue)
+                Text(instruction)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

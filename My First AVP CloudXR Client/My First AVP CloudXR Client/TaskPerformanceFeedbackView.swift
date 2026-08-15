@@ -20,6 +20,10 @@ struct TaskPerformanceFeedbackView: View {
 
     private var taskID: TaskID { round == .a ? .task2A : .task2B }
 
+    /// Always on screen, so a participant who misses the spoken brief still
+    /// knows what is expected instead of freezing.
+    private let instruction = "Read the feedback and talk it through with the avatar. Acknowledge when you are ready."
+
     var body: some View {
         VStack(spacing: 0) {
             header
@@ -50,7 +54,7 @@ struct TaskPerformanceFeedbackView: View {
             VStack(alignment: .leading) {
                 Text("SAP Performance Development · Q2 Goal Review")
                     .font(.title2.weight(.semibold))
-                Text("Goal: \(goalName) · \(agent.rawValue)")
+                Text("Goal: \(goalName)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -165,6 +169,9 @@ struct TaskPerformanceFeedbackView: View {
 
     private var footer: some View {
         HStack {
+            Label(instruction, systemImage: "info.circle")
+                .font(.caption)
+                .foregroundStyle(.secondary)
             Spacer()
             Button {
                 acknowledged = true
