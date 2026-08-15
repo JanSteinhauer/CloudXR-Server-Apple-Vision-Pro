@@ -18,6 +18,7 @@ struct ContentView: View {
     @Environment(\.openWindow) var openWindow
     @Environment(\.dismissWindow) var dismissWindow
     @EnvironmentObject var syncService: PrototypeSyncService
+    @EnvironmentObject var voiceService: ParticipantVoiceService
 
     // Configurable session settings.
     @AppStorage("ipAddress") static var ipAddress: String = ""
@@ -109,8 +110,16 @@ struct ContentView: View {
                                 try await cxrSession.connect()
 
                                 await openImmersiveSpace(id: streamingSpaceTitle)
+
+                                // The server has no microphone of its own once it is a
+                                // cloud VM, so the headset publishes the participant's
+                                // voice straight into the LiveKit room.
+                                await voiceService.start()
                             }
                         }.padding()
+
+            microphoneRow
+                .padding(.horizontal)
 
             HStack(spacing: 20) {
                 Button("Prototype") {
@@ -209,6 +218,40 @@ struct ContentView: View {
             let closed = oldValue.subtracting(newValue)
             for task in closed {
                 dismissWindow(id: "task", value: task)
+            }
+        }
+    }
+
+    // MARK: - Microphone status
+
+    /// The experimenter needs to see at a glance that the participant's voice is
+    /// actually reaching the room — a silent microphone failure looks exactly
+    /// like a participant who is not talking.
+    private var microphoneRow: some View {
+        HStack(spacing: 12) {
+            Image(systemName: voiceService.state.isHealthy
+                  ? (voiceService.isMuted ? "mic.slash.fill" : "mic.fill")
+                  : "mic.badge.xmark")
+                .foregroundStyle(voiceService.state.isHealthy
+                                 ? (voiceService.isMuted ? .orange : .green)
+                                 : .secondary)
+
+            Text(voiceService.state.label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Spacer()
+
+            if voiceService.state.isHealthy {
+                Button(voiceService.isMuted ? "Unmute" : "Mute") {
+                    Task { await voiceService.setMuted(!voiceService.isMuted) }
+                }
+                .controlSize(.small)
+            } else {
+                Button("Connect mic") {
+                    Task { await voiceService.start() }
+                }
+                .controlSize(.small)
             }
         }
     }

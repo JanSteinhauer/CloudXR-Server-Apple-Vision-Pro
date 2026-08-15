@@ -41,6 +41,33 @@ struct EnvironmentConfig {
         return ""
     }
 
+    // MARK: - LiveKit (participant microphone)
+
+    /// Must match `livekitclient_server_url` in the Unity project's
+    /// `Resources/01_LiveKitClient.asset`.
+    var liveKitServerURL: String {
+        config["LIVEKIT_SERVER_URL"] ?? "wss://realitystack-livekit.caidas.uni-wuerzburg.de"
+    }
+
+    /// Must match `livekitcontrol_server_url` in `Resources/02_LiveKitControl.asset`.
+    /// Used only to mint a join token.
+    var liveKitControlURL: String {
+        config["LIVEKIT_CONTROL_URL"] ?? "https://realitystack-livekit.caidas.uni-wuerzburg.de:4437"
+    }
+
+    var liveKitControlUser: String { config["LIVEKIT_CONTROL_USER"] ?? "" }
+    var liveKitControlApiKey: String { config["LIVEKIT_CONTROL_API_KEY"] ?? "" }
+
+    /// Must match `room` in `Resources/03_LiveKitSession.asset` — the headset has to
+    /// join the same room the Unity server and the agent are in.
+    var liveKitRoom: String { config["LIVEKIT_ROOM"] ?? "" }
+
+    /// Identity the headset publishes under. Kept distinct from the Unity server's
+    /// local participant so the two are tellable apart in the room.
+    var liveKitParticipantIdentity: String {
+        config["LIVEKIT_PARTICIPANT_IDENTITY"] ?? "avp-participant"
+    }
+
     // MARK: - Initialization
     private init() {
         loadEnvironmentVariables()
@@ -146,5 +173,14 @@ extension EnvironmentConfig {
     static var cloudXR: String {
         let config = EnvironmentConfig.shared
         return config.cloudXRClientToken
+    }
+
+    /// LiveKit configuration for publishing the headset microphone.
+    static var liveKit: (serverURL: String, controlURL: String, user: String,
+                         apiKey: String, room: String, identity: String) {
+        let config = EnvironmentConfig.shared
+        return (config.liveKitServerURL, config.liveKitControlURL,
+                config.liveKitControlUser, config.liveKitControlApiKey,
+                config.liveKitRoom, config.liveKitParticipantIdentity)
     }
 }

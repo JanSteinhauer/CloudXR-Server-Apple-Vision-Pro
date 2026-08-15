@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app uses the microphone so you can speak with the avatar during the study session.</string>
 	<key>NSWorldSensingUsageDescription</key>
 	<string>This app uses world sensing to detect and track objects in your environment for augmented reality experiences.</string>
 	<key>NSHandsTrackingUsageDescription</key>

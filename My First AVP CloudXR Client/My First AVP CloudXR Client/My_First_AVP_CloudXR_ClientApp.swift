@@ -24,6 +24,7 @@ struct My_First_AVP_CloudXR_ClientApp: App {
     @StateObject private var syncService: PrototypeSyncService
     @StateObject private var conditionService: ExperimentConditionService
     @StateObject private var eventLog: SessionEventLog
+    @StateObject private var voiceService = ParticipantVoiceService()
 
     init() {
         CloudXRKit.registerSystems()
@@ -68,6 +69,7 @@ struct My_First_AVP_CloudXR_ClientApp: App {
                 .environmentObject(syncService)
                 .environmentObject(conditionService)
                 .environmentObject(eventLog)
+                .environmentObject(voiceService)
                 .task {
                     // Request world sensing authorization for object tracking
                     await objectTrackingManager.requestWorldSensingAuthorization()
