@@ -14,9 +14,13 @@ struct TaskInformationSharingView: View {
     let agent: AgentType
 
     @Environment(\.openWindow) private var openWindow
+    @EnvironmentObject private var eventLog: SessionEventLog
+
     @State private var highlightedContextIndex: Int? = nil
     @State private var statusPanelVisible: Bool = false
     @State private var confirmed: Bool = false
+
+    private var taskID: TaskID { round == .a ? .task1A : .task1B }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -165,6 +169,7 @@ struct TaskInformationSharingView: View {
         HStack(spacing: 16) {
             Button {
                 confirmed = true
+                eventLog.record("information_confirmed", task: taskID)
             } label: {
                 Label(confirmed ? "Confirmed" : "Confirm — I've got it on my radar",
                       systemImage: confirmed ? "checkmark.circle.fill" : "checkmark.circle")
@@ -177,6 +182,9 @@ struct TaskInformationSharingView: View {
 
             Button {
                 // open mic affordance (stub)
+                // Logged even though the affordance is a stub: whether participants
+                // reach for a follow-up at all differs by condition and is worth having.
+                eventLog.record("followup_requested", task: taskID)
             } label: {
                 Label("Ask follow-up question", systemImage: "mic.fill")
                     .frame(maxWidth: .infinity)
@@ -263,4 +271,5 @@ struct TaskInformationSharingView: View {
 
 #Preview(windowStyle: .automatic) {
     TaskInformationSharingView(round: .a, agent: .managerClone)
+        .environmentObject(SessionEventLog.preview)
 }

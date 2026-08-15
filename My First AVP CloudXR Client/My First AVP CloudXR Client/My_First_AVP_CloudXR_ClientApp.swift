@@ -22,6 +22,8 @@ struct My_First_AVP_CloudXR_ClientApp: App {
 
     @StateObject private var queryService: CloudXRQueryService
     @StateObject private var syncService: PrototypeSyncService
+    @StateObject private var conditionService: ExperimentConditionService
+    @StateObject private var eventLog: SessionEventLog
 
     init() {
         CloudXRKit.registerSystems()
@@ -31,22 +33,41 @@ struct My_First_AVP_CloudXR_ClientApp: App {
 
         // Initialize Firebase query service with environment config (with fallback empty values)
         let (projectId, apiKey) = EnvironmentConfig.firebase
+        let resolvedProjectId = projectId.isEmpty ? "default-project" : projectId
+        let resolvedApiKey = apiKey.isEmpty ? "default-key" : apiKey
 
         _queryService = StateObject(wrappedValue: CloudXRQueryService(
-            projectId: projectId.isEmpty ? "default-project" : projectId,
-            apiKey: apiKey.isEmpty ? "default-key" : apiKey
+            projectId: resolvedProjectId,
+            apiKey: resolvedApiKey
         ))
 
         _syncService = StateObject(wrappedValue: PrototypeSyncService(
-            projectId: projectId.isEmpty ? "default-project" : projectId,
-            apiKey: apiKey.isEmpty ? "default-key" : apiKey
+            projectId: resolvedProjectId,
+            apiKey: resolvedApiKey
         ))
+
+        // Built together so every logged event can be stamped with the condition
+        // that was live when it happened.
+        let condition = ExperimentConditionService(
+            projectId: resolvedProjectId,
+            apiKey: resolvedApiKey
+        )
+        let log = SessionEventLog(
+            projectId: resolvedProjectId,
+            apiKey: resolvedApiKey
+        )
+        log.conditionService = condition
+
+        _conditionService = StateObject(wrappedValue: condition)
+        _eventLog = StateObject(wrappedValue: log)
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(syncService)
+                .environmentObject(conditionService)
+                .environmentObject(eventLog)
                 .task {
                     // Request world sensing authorization for object tracking
                     await objectTrackingManager.requestWorldSensingAuthorization()
@@ -72,12 +93,16 @@ struct My_First_AVP_CloudXR_ClientApp: App {
         WindowGroup(id: "taskMaster") {
             TaskMasterView()
                 .environment(appModel)
+                .environmentObject(conditionService)
+                .environmentObject(eventLog)
         }
         .defaultSize(width: 480, height: 720)
 
         WindowGroup(id: "task", for: TaskID.self) { $taskID in
             TaskWindowView(taskID: taskID ?? .task1A)
                 .environment(appModel)
+                .environmentObject(conditionService)
+                .environmentObject(eventLog)
         }
         .defaultSize(width: 1200, height: 820)
 

@@ -13,9 +13,15 @@ struct TaskAdvisoryView: View {
     let round: TaskRound
     let agent: AgentType
 
+    @EnvironmentObject private var eventLog: SessionEventLog
+
     @State private var items: [QueueItem]
     @State private var decision: Decision? = nil
     @State private var declineReason: String = ""
+    @State private var loggedReason: String = ""
+
+    /// This view is opened as either task3A or task3B; the round tells us which.
+    private var taskID: TaskID { round == .a ? .task3A : .task3B }
 
     init(round: TaskRound, agent: AgentType) {
         self.round = round
@@ -35,10 +41,22 @@ struct TaskAdvisoryView: View {
         }
         .background(.regularMaterial)
         .onChange(of: round) { _, newValue in
+            flushDeclineReason()
             items = Self.makeItems(for: newValue)
             decision = nil
             declineReason = ""
+            loggedReason = ""
         }
+        // The reason is free text with no submit affordance, so it is captured
+        // when the window goes away rather than on a keystroke.
+        .onDisappear { flushDeclineReason() }
+    }
+
+    private func flushDeclineReason() {
+        let trimmed = declineReason.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, trimmed != loggedReason else { return }
+        loggedReason = trimmed
+        eventLog.record("advisory_decline_reason", task: taskID, value: trimmed)
     }
 
     // MARK: - Header
@@ -159,6 +177,11 @@ struct TaskAdvisoryView: View {
             HStack(spacing: 16) {
                 Button {
                     decision = .followed
+                    // The compliance measure for Task 3.
+                    eventLog.record("advisory_decision", task: taskID, value: "followed",
+                                    detail: ["selectedItems": String(items.filter(\.selected).count),
+                                             "totalItems": String(items.count),
+                                             "action": dangerTitle])
                 } label: {
                     Label("Follow the recommendation", systemImage: "checkmark.circle")
                         .frame(maxWidth: .infinity)
@@ -171,6 +194,10 @@ struct TaskAdvisoryView: View {
 
                 Button {
                     decision = .declined
+                    eventLog.record("advisory_decision", task: taskID, value: "declined",
+                                    detail: ["selectedItems": String(items.filter(\.selected).count),
+                                             "totalItems": String(items.count),
+                                             "action": dangerTitle])
                 } label: {
                     Label("Decline / Choose differently", systemImage: "xmark.circle")
                         .frame(maxWidth: .infinity)
@@ -276,4 +303,5 @@ struct TaskAdvisoryView: View {
 
 #Preview(windowStyle: .automatic) {
     TaskAdvisoryView(round: .a, agent: .managerClone)
+        .environmentObject(SessionEventLog.preview)
 }

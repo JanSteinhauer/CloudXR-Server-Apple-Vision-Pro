@@ -13,7 +13,12 @@ struct TaskPerformanceFeedbackView: View {
     let round: TaskRound
     let agent: AgentType
 
+    @EnvironmentObject private var eventLog: SessionEventLog
+
     @State private var acknowledged: Bool = false
+    @State private var shownAt: Date?
+
+    private var taskID: TaskID { round == .a ? .task2A : .task2B }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -28,7 +33,11 @@ struct TaskPerformanceFeedbackView: View {
             footer
         }
         .background(.regularMaterial)
-        .onChange(of: round) { _, _ in acknowledged = false }
+        .onAppear { shownAt = Date() }
+        .onChange(of: round) { _, _ in
+            acknowledged = false
+            shownAt = Date()
+        }
     }
 
     // MARK: - Header (amber)
@@ -159,6 +168,12 @@ struct TaskPerformanceFeedbackView: View {
             Spacer()
             Button {
                 acknowledged = true
+                // How long the participant sat with the negative feedback before
+                // acknowledging is more informative than the click itself.
+                let dwell = shownAt.map { Int(Date().timeIntervalSince($0)) }
+                eventLog.record("feedback_acknowledged", task: taskID,
+                                value: goalName,
+                                detail: dwell.map { ["secondsBeforeAcknowledge": String($0)] } ?? [:])
             } label: {
                 Label(acknowledged ? "Feedback acknowledged" : "Acknowledge feedback",
                       systemImage: acknowledged ? "checkmark.seal.fill" : "checkmark.seal")
@@ -186,4 +201,5 @@ struct TaskPerformanceFeedbackView: View {
 
 #Preview(windowStyle: .automatic) {
     TaskPerformanceFeedbackView(round: .a, agent: .managerClone)
+        .environmentObject(SessionEventLog.preview)
 }

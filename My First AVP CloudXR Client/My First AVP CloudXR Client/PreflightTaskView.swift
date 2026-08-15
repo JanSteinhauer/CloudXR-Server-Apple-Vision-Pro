@@ -10,9 +10,25 @@ import SwiftUI
 
 struct PreflightTaskView: View {
     let round: TaskRound
-    
+
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var eventLog: SessionEventLog
+
+    /// Every routing / review decision on this screen, flattened for the event log.
+    private var preflightChoices: [String: String] {
+        var out: [String: String] = [:]
+        if round == .a {
+            for ticket in tickets where !ticket.selectedQueue.isEmpty {
+                out[ticket.id] = ticket.selectedQueue
+            }
+        } else {
+            for summary in summaries {
+                out[summary.id] = summary.decision ?? "none"
+            }
+        }
+        return out
+    }
 
     // MARK: - State variables for Round A (Tickets)
     @State private var tickets: [Ticket] = [
@@ -595,6 +611,12 @@ struct PreflightTaskView: View {
                 .buttonStyle(.bordered)
             
             Button(action: {
+                // Baseline measure: the laptop-UI choices made before any clone
+                // is involved. Captured in one event rather than per keystroke.
+                eventLog.record("preflight_submitted",
+                                task: round == .a ? .preflight1A : .preflight1B,
+                                value: String(completedCount),
+                                detail: preflightChoices)
                 // Open task view
                 openWindow(id: "task", value: round == .a ? TaskID.task1A : TaskID.task1B)
                 // Dismiss preflight window
@@ -650,4 +672,5 @@ struct Summary: Identifiable {
 
 #Preview {
     PreflightTaskView(round: .a)
+        .environmentObject(SessionEventLog.preview)
 }

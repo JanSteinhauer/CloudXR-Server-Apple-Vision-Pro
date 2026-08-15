@@ -11,14 +11,18 @@ import SwiftUI
 struct TaskMasterView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.openWindow) private var openWindow
+    @EnvironmentObject private var conditionService: ExperimentConditionService
+    @EnvironmentObject private var eventLog: SessionEventLog
 
     var body: some View {
-        @Bindable var model = model
-
         VStack(alignment: .leading, spacing: 0) {
             header
 
-            agentSection(agentType: $model.agentType)
+            participantSection
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+
+            conditionSection
                 .padding(.horizontal, 20)
                 .padding(.top, 16)
                 .padding(.bottom, 8)
@@ -60,24 +64,83 @@ struct TaskMasterView: View {
         .background(.thinMaterial)
     }
 
-    // MARK: - Agent section
+    // MARK: - Participant
 
-    private func agentSection(agentType: Binding<AgentType>) -> some View {
+    private var participantSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label("Agent (counterbalanced)", systemImage: "person.crop.square.badge.camera")
+            Label("Participant", systemImage: "person.text.rectangle")
                 .font(.headline)
 
-            Picker("Agent type", selection: agentType) {
-                ForEach(AgentType.allCases) { agent in
-                    Text(agent.rawValue).tag(agent)
+            HStack(spacing: 12) {
+                TextField("Participant ID (e.g. P07)", text: Binding(
+                    get: { eventLog.participantId },
+                    set: { eventLog.participantId = $0 }
+                ))
+                .textFieldStyle(.roundedBorder)
+
+                Label("\(eventLog.writtenCount)", systemImage: "square.and.arrow.up")
+                    .font(.caption)
+                    .foregroundStyle(eventLog.lastError == nil ? .secondary : .red)
+                    .help("Events written this session")
+            }
+
+            if eventLog.participantId.isEmpty {
+                Text("Set this before the session starts — events are logged without it otherwise.")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
+
+            if let error = eventLog.lastError {
+                Text("Last write failed: \(error)")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+
+    // MARK: - Condition section
+
+    // Drives `experiment_control/condition` in Firestore, which the Unity server
+    // also obeys — so setting it here switches the avatar on the headset too, and
+    // there is no second local copy that can drift out of step.
+    private var conditionSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Label("Condition (counterbalanced)", systemImage: "person.crop.square.badge.camera")
+                    .font(.headline)
+                Spacer()
+                if !conditionService.hasSynced {
+                    ProgressView().controlSize(.small)
+                }
+            }
+
+            Picker("Condition", selection: Binding(
+                get: { conditionService.condition },
+                set: { newValue in
+                    Task {
+                        await conditionService.setCondition(newValue)
+                        eventLog.record("condition_set", value: newValue.rawValue)
+                    }
+                }
+            )) {
+                ForEach(ExperimentCondition.allCases) { condition in
+                    Text(condition.operatorLabel).tag(condition)
                 }
             }
             .pickerStyle(.segmented)
             .labelsHidden()
 
-            Text(agentType.wrappedValue.description)
+            Text(conditionService.hasSynced
+                 ? "Synced with the Unity server via Firestore."
+                 : "Waiting for the first read of experiment_control/condition…")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+
+            if conditionService.conflictDetected {
+                Text("Both flags are true in Firestore — treated as no clone.")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
         }
     }
 
@@ -141,4 +204,6 @@ struct TaskMasterView: View {
 #Preview(windowStyle: .automatic) {
     TaskMasterView()
         .environment(AppModel())
+        .environmentObject(ExperimentConditionService.preview())
+        .environmentObject(SessionEventLog.preview)
 }
