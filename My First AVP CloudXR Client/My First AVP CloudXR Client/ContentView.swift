@@ -23,7 +23,13 @@ struct ContentView: View {
     // Configurable session settings.
     @AppStorage("ipAddress") static var ipAddress: String = ""
     @AppStorage("resolutionPreset") private var resolutionPreset: ResolutionPreset = .standardPreset
-    @AppStorage("enableHandTracking") private var enableHandTracking: Bool = true
+    /// Off by default: a study session never needs the participant's hands. They
+    /// speak to the avatar, and the task windows are native visionOS windows driven
+    /// by the system's own eye-and-pinch input, which is handled by the OS and works
+    /// whether or not this app tracks hands. Leaving it on only lets a raised palm
+    /// summon the streamed app's hand menu, lets stray pokes reach the scene, and
+    /// spends upstream bandwidth on joint poses nobody reads.
+    @AppStorage("enableHandTracking") private var enableHandTracking: Bool = false
 
     @State private var spatialAnchors: [SpatialAnchor] = []
     @State private var isLoadingAnchors = false
@@ -50,7 +56,12 @@ struct ContentView: View {
                         }
                 }
 
-                Toggle("Enable Hand Tracking", isOn: $enableHandTracking)
+                Toggle("Hand tracking", isOn: $enableHandTracking)
+                Text(enableHandTracking
+                     ? "On — a raised palm can summon the streamed app's hand menu. Turn off for participant sessions."
+                     : "Off — recommended for participant sessions. Window input still works; that is system eye-and-pinch.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
 //            Model3D(named: "Scene", bundle: realityKitContentBundle)
