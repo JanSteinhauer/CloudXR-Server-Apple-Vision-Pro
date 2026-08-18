@@ -24,6 +24,7 @@ struct My_First_AVP_CloudXR_ClientApp: App {
     @StateObject private var syncService: PrototypeSyncService
     @StateObject private var conditionService: ExperimentConditionService
     @StateObject private var eventLog: SessionEventLog
+    @StateObject private var speechService: ParticipantSpeechService
 
     init() {
         CloudXRKit.registerSystems()
@@ -58,8 +59,18 @@ struct My_First_AVP_CloudXR_ClientApp: App {
         )
         log.conditionService = condition
 
+        // Needs both: the condition to stamp utterances with, and the event log for
+        // the participant/session ids.
+        let speech = ParticipantSpeechService(
+            projectId: resolvedProjectId,
+            apiKey: resolvedApiKey,
+            eventLog: log,
+            conditionService: condition
+        )
+
         _conditionService = StateObject(wrappedValue: condition)
         _eventLog = StateObject(wrappedValue: log)
+        _speechService = StateObject(wrappedValue: speech)
     }
 
     var body: some Scene {
@@ -68,6 +79,7 @@ struct My_First_AVP_CloudXR_ClientApp: App {
                 .environmentObject(syncService)
                 .environmentObject(conditionService)
                 .environmentObject(eventLog)
+                .environmentObject(speechService)
                 .task {
                     // Request world sensing authorization for object tracking
                     await objectTrackingManager.requestWorldSensingAuthorization()

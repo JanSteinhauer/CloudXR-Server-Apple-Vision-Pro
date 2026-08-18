@@ -18,6 +18,7 @@ struct ContentView: View {
     @Environment(\.openWindow) var openWindow
     @Environment(\.dismissWindow) var dismissWindow
     @EnvironmentObject var syncService: PrototypeSyncService
+    @EnvironmentObject var speechService: ParticipantSpeechService
 
     // Configurable session settings.
     @AppStorage("ipAddress") static var ipAddress: String = ""
@@ -109,8 +110,15 @@ struct ContentView: View {
                                 try await cxrSession.connect()
 
                                 await openImmersiveSpace(id: streamingSpaceTitle)
+
+                                // The participant's voice cannot reach the server as audio,
+                                // so it is transcribed here and sent as text.
+                                await speechService.start()
                             }
                         }.padding()
+
+            speechRow
+                .padding(.horizontal)
 
             HStack(spacing: 20) {
                 Button("Prototype") {
@@ -210,6 +218,76 @@ struct ContentView: View {
             for task in closed {
                 dismissWindow(id: "task", value: task)
             }
+        }
+    }
+
+    // MARK: - Speech status
+
+    /// The experimenter has to be able to see that the participant is being heard.
+    /// A dead recogniser is indistinguishable from a quiet participant otherwise,
+    /// and by the time you notice, the session is spent.
+    private var speechRow: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 12) {
+                Image(systemName: icon)
+                    .foregroundStyle(tint)
+
+                Text(speechService.state.label)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Text("· \(speechService.committedCount) sent")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+
+                if speechService.state.isRunning {
+                    Button("Send now") { speechService.commitNow() }
+                        .controlSize(.small)
+                        .disabled(speechService.partialText.isEmpty)
+                    Button("Stop") { speechService.stop() }
+                        .controlSize(.small)
+                } else {
+                    Button("Start listening") {
+                        Task { await speechService.start() }
+                    }
+                    .controlSize(.small)
+                }
+            }
+
+            // Live partial transcript — the fastest way to see whether recognition
+            // is actually working and roughly how accurate it is.
+            if !speechService.partialText.isEmpty {
+                Text("“\(speechService.partialText)”")
+                    .font(.caption)
+                    .italic()
+                    .lineLimit(2)
+                    .foregroundStyle(.primary)
+            } else if !speechService.lastCommitted.isEmpty {
+                Text("last: “\(speechService.lastCommitted)”")
+                    .font(.caption2)
+                    .lineLimit(1)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var icon: String {
+        switch speechService.state {
+        case .listening: return "waveform"
+        case .gated: return "pause.circle"
+        case .failed, .unavailable: return "exclamationmark.triangle"
+        default: return "waveform.slash"
+        }
+    }
+
+    private var tint: Color {
+        switch speechService.state {
+        case .listening: return .green
+        case .gated: return .orange
+        case .failed, .unavailable: return .red
+        default: return .secondary
         }
     }
 
