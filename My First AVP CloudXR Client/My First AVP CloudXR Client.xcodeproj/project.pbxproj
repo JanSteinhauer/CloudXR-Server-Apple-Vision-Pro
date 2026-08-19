@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EC374FDF2F952627009BB040 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = EC374FDE2F952627009BB040 /* RealityKitContent */; };
 		EC374FEF2F9526A1009BB040 /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = EC374FEE2F9526A1009BB040 /* CloudXRKit */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +41,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EC374FDF2F952627009BB040 /* RealityKitContent in Frameworks */,
 				EC374FEF2F9526A1009BB040 /* CloudXRKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,7 +93,6 @@
 			);
 			name = "My First AVP CloudXR Client";
 			packageProductDependencies = (
-				EC374FDE2F952627009BB040 /* RealityKitContent */,
 				EC374FEE2F9526A1009BB040 /* CloudXRKit */,
 			);
 			productName = "My First AVP CloudXR Client";
@@ -374,10 +371,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EC374FDE2F952627009BB040 /* RealityKitContent */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RealityKitContent;
-		};
 		EC374FEE2F9526A1009BB040 /* CloudXRKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EC374FED2F9526A1009BB040 /* XCRemoteSwiftPackageReference "cloudxr-framework" */;

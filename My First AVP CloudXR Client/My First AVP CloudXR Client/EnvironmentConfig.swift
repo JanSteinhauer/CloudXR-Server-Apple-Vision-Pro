@@ -41,6 +41,16 @@ struct EnvironmentConfig {
         return ""
     }
 
+    /// Address of the Windows host as seen by the Vision Pro. The fallback is
+    /// the standard address of Windows Mobile Hotspot used by this project.
+    var cloudXRServerIP: String {
+        let value = config["CLOUDXR_SERVER_IP"]?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let value = value, !value.isEmpty {
+            return value
+        }
+        return "192.168.137.1"
+    }
+
     // MARK: - LiveKit (participant microphone)
 
     /// Must match `livekitclient_server_url` in the Unity project's
@@ -149,6 +159,7 @@ struct EnvironmentConfig {
         print("FIREBASE_PROJECT_ID: \(firebaseProjectId.isEmpty ? "<not set>" : firebaseProjectId)")
         print("FIREBASE_API_KEY: \(firebaseApiKey.isEmpty ? "<not set>" : maskSecret(firebaseApiKey))")
         print("CLOUDXR_CLIENT_TOKEN: \(cloudXRClientToken.isEmpty ? "<not set>" : maskSecret(cloudXRClientToken))")
+        print("CLOUDXR_SERVER_IP: \(cloudXRServerIP)")
         print("=================================")
     }
 

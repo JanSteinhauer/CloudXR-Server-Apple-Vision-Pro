@@ -7,7 +7,6 @@
 
 import SwiftUI
 import RealityKit
-import RealityKitContent
 
 import CloudXRKit
 
@@ -20,7 +19,7 @@ struct ContentView: View {
     @EnvironmentObject var syncService: PrototypeSyncService
 
     // Configurable session settings.
-    @AppStorage("ipAddress") static var ipAddress: String = ""
+    @AppStorage("ipAddress") static var ipAddress: String = "192.168.137.1"
     @AppStorage("resolutionPreset") private var resolutionPreset: ResolutionPreset = .standardPreset
     /// Off by default: a study session never needs the participant's hands. They
     /// speak to the avatar, and the task windows are native visionOS windows driven
@@ -36,6 +35,7 @@ struct ContentView: View {
     @State private var anchorsMessage = ""
     @State private var cloudXRMicEnabled = false
     @State private var cloudXRSessionConnected = false
+    @State private var connectionStatusMessage = ""
 
     var body: some View {
         VStack {
@@ -44,7 +44,7 @@ struct ContentView: View {
                 HStack {
                     Text("IP Address")
                     Spacer()
-                    TextField("0.0.0.0", text: ContentView.$ipAddress)
+                    TextField("192.168.137.1", text: ContentView.$ipAddress)
                         .autocorrectionDisabled(true)
                         .keyboardType(.numbersAndPunctuation)
                         .textInputAutocapitalization(.never)
@@ -65,72 +65,79 @@ struct ContentView: View {
                     .foregroundStyle(.secondary)
             }
 
-//            Model3D(named: "Scene", bundle: realityKitContentBundle)
-//                .padding(.bottom, 50)
-//
-//            Button("Connect") {
-//                Task { @MainActor in
-//                    var config = CloudXRKit.Config()
-//                    // Configure our IP address
-//                    config.connectionType = .local(ip: ContentView.ipAddress)
-//                    // Set the resolution preset to low-resolution for testing; normally use .standardPreset
-//                    config.resolutionPreset = .standardPreset
-//                    cxrSession.configure(config: config)
-//                    // Connect!
-//                    try await cxrSession.connect()
-//
-//                    await openImmersiveSpace(id: streamingSpaceTitle)
-//                }
-//            }.padding()
             Button("Connect") {
                             Task { @MainActor in
-                                var config = CloudXRKit.Config()
+                                let enteredIP = ContentView.ipAddress.trimmingCharacters(
+                                    in: .whitespacesAndNewlines
+                                )
+                                let serverIP = enteredIP.isEmpty || enteredIP == "0.0.0.0"
+                                    ? EnvironmentConfig.shared.cloudXRServerIP
+                                    : enteredIP
 
-                                // Get token if available, otherwise proceed without it
-                                let token = EnvironmentConfig.shared.cloudXRClientToken
+                                // Never pass an empty hostname to CloudXR. An empty value
+                                // produces `wss://:48322` and fails with "Host not found".
+                                ContentView.ipAddress = serverIP
+                                cloudXRSessionConnected = false
+                                connectionStatusMessage = "Connecting securely to \(serverIP):48322…"
+                                print("[CloudXR] Connecting to \(serverIP):48322")
 
-                                if !token.isEmpty {
-                                    config.connectionType = .localSecure(
-                                        ip: ContentView.ipAddress,
-                                        clientToken: token,
-                                        certificateValidationHandler: { challenge in
-                                            // Automatically trust the self-signed cert from the VM
-                                            if let trust = challenge.protectionSpace.serverTrust {
-                                                return (.useCredential, URLCredential(trust: trust))
+                                do {
+                                    var config = CloudXRKit.Config()
+                                    let token = EnvironmentConfig.shared.cloudXRClientToken
+
+                                    if !token.isEmpty {
+                                        config.connectionType = .localSecure(
+                                            ip: serverIP,
+                                            clientToken: token,
+                                            certificateValidationHandler: { challenge in
+                                                // Trust the self-signed certificate issued by
+                                                // the local CloudXR Stream Manager.
+                                                if let trust = challenge.protectionSpace.serverTrust {
+                                                    return (.useCredential, URLCredential(trust: trust))
+                                                }
+                                                return (.performDefaultHandling, nil)
                                             }
-                                            return (.performDefaultHandling, nil)
-                                        }
-                                    )
-                                } else {
-                                    // Fallback to basic local connection without token
-                                    config.connectionType = .local(ip: ContentView.ipAddress)
-                                    print("⚠️ Using local connection without secure token")
+                                        )
+                                    } else {
+                                        config.connectionType = .local(ip: serverIP)
+                                        connectionStatusMessage = "Connecting to \(serverIP):48322…"
+                                        print("⚠️ Using local connection without secure token")
+                                    }
+
+                                    config.resolutionPreset = .standardPreset
+
+                                    #if targetEnvironment(simulator)
+                                    config.handTrackingMode = enableHandTracking ? .simulated : .disabled
+                                    #else
+                                    config.handTrackingMode = enableHandTracking ? .prediction : .disabled
+                                    #endif
+
+                                    cxrSession.configure(config: config)
+                                    try await cxrSession.connect()
+                                    cloudXRSessionConnected = true
+
+                                    // Framework 6.1+ publishes the Vision Pro microphone
+                                    // through CloudXR Runtime 6.2+ after connection.
+                                    cxrSession.setMicEnabled(true)
+                                    cloudXRMicEnabled = cxrSession.isMicEnabled
+                                    connectionStatusMessage = "Connected to \(serverIP)"
+
+                                    await openImmersiveSpace(id: streamingSpaceTitle)
+                                } catch {
+                                    cloudXRSessionConnected = false
+                                    cloudXRMicEnabled = false
+                                    connectionStatusMessage = "Connection failed: \(error.localizedDescription)"
+                                    print("❌ [CloudXR] Connection to \(serverIP) failed: \(error)")
                                 }
-
-                                config.resolutionPreset = .standardPreset
-
-                                // Enable hand tracking for interaction
-                                #if targetEnvironment(simulator)
-                                config.handTrackingMode = enableHandTracking ? .simulated : .disabled
-                                #else
-                                config.handTrackingMode = enableHandTracking ? .prediction : .disabled
-                                #endif
-
-                                cxrSession.configure(config: config)
-
-                                // Connect!
-                                try await cxrSession.connect()
-                                cloudXRSessionConnected = true
-
-                                // Framework 6.1+ publishes the Vision Pro microphone
-                                // through CloudXR Runtime 6.2+. This must be enabled
-                                // after the streaming session is connected.
-                                cxrSession.setMicEnabled(true)
-                                cloudXRMicEnabled = cxrSession.isMicEnabled
-
-                                await openImmersiveSpace(id: streamingSpaceTitle)
                             }
                         }.padding()
+
+            if !connectionStatusMessage.isEmpty {
+                Text(connectionStatusMessage)
+                    .font(.caption)
+                    .foregroundStyle(cloudXRSessionConnected ? Color.green : Color.secondary)
+                    .padding(.horizontal)
+            }
 
             cloudXRMicrophoneRow
                 .padding(.horizontal)
