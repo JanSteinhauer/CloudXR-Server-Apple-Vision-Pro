@@ -1,0 +1,386 @@
+[
+  {
+    "id": "item_208cc096c36d",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_fdd3d98ba3f9",
+    "role": "assistant",
+    "content": [
+      "Hello! How can I assist you today?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_2918766a16c8",
+    "role": "user",
+    "content": [
+      "What is 5 plus 5"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_c4f64f0bf966",
+    "role": "assistant",
+    "content": [
+      "5 plus 5 equals 10."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_c513ffabca1f",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_06ac2aaa41a3",
+    "role": "user",
+    "content": [
+      "What is drei plus drei?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_0c6906bbb41c",
+    "role": "assistant",
+    "content": [
+      "Hello! \"Drei"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_5a23140adcd5",
+    "role": "user",
+    "content": [
+      "Hello."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_16b908436e9e",
+    "role": "user",
+    "content": [
+      "Ber."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_9c75c4b553af",
+    "role": "user",
+    "content": [
+      "What is drei plus drei?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_d228447896cd",
+    "role": "assistant",
+    "content": [
+      "Hello! \"Drei plus"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_72a590c90dd6",
+    "role": "user",
+    "content": [
+      "Hello, dry"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_edcfea76049c",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_b203d564710f",
+    "role": "assistant",
+    "content": [
+      "Hello! How can I assist you today?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_448287b570f8",
+    "role": "user",
+    "content": [
+      "Hello, what is 3 plus 3?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_4c470177b7b3",
+    "role": "assistant",
+    "content": [
+      "Hello! 3 plus 3 equals 6."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_3fa6895c659c",
+    "role": "user",
+    "content": [
+      "What is 3 plus 3?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_3f8cba1cda6b",
+    "role": "assistant",
+    "content": [
+      "3 plus 3 equals 6."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_1ed873be76d0",
+    "role": "user",
+    "content": [
+      "Hallo."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_f733a4ee7d85",
+    "role": "assistant",
+    "content": [
+      "Hallo! Wie kann ich Ihnen heute helfen?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_e1a8b3eaa878",
+    "role": "user",
+    "content": [
+      "Was ist zwei plus zwei?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_039b3a198fc3",
+    "role": "assistant",
+    "content": [
+      "Zwei plus Zwei ist gleich Vier."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_ef5ff98ea39f",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_c65412d7350d",
+    "role": "user",
+    "content": [
+      "Test, test, test. Can you hear me?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_e423bfb22306",
+    "role": "assistant",
+    "content": [
+      "Hello! I can hear you loud"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_4e36dda96c04",
+    "role": "user",
+    "content": [
+      "Hello,"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_c321fe1f2620",
+    "role": "assistant",
+    "content": [
+      "Hello! How can I assist you today?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_1c34e0f81732",
+    "role": "user",
+    "content": [
+      "Zobu"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_d11e0a1a8137",
+    "role": "user",
+    "content": [
+      "Draw out of the picture?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_9504fb6356f0",
+    "role": "assistant",
+    "content": [
+      "I'm"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_25cb3ad6e63c",
+    "role": "user",
+    "content": [
+      "Like this one?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_edbeeb09e309",
+    "role": "assistant",
+    "content": [
+      "It seems like you might want to"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_a45fb0e3ad33",
+    "role": "user",
+    "content": [
+      "It's a little bit like a lobster."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_62e94a35a520",
+    "role": "assistant",
+    "content": [
+      "That sounds"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_5b037af3eae2",
+    "role": "user",
+    "content": [
+      "Mopsen."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_f8c5b30d4b54",
+    "role": "user",
+    "content": [
+      "ciéndose close"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_92a627b54eb0",
+    "role": "user",
+    "content": [
+      "I see more like ers"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_05bf6f0c5719",
+    "role": "assistant",
+    "content": [
+      "It looks"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_eae0a839f604",
+    "role": "user",
+    "content": [
+      "Si,"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_93926f0ff24c",
+    "role": "assistant",
+    "content": [
+      "¡Perfecto! ¿En qué puedo ayudarte hoy?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_bf9fb1a04ae9",
+    "role": "user",
+    "content": [
+      "ぶぶぶ Google."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_bc6cea9f6281",
+    "role": "assistant",
+    "content": [
+      "こんにちは！何かお手伝いできることがありますか？"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_4f19ae4c1db4",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_65fc30347618",
+    "role": "assistant",
+    "content": [
+      "Hello! How can I assist you today?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_3fe18d11b31e",
+    "role": "user",
+    "content": [
+      "Hello, what is your name?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_00280832bcee",
+    "role": "assistant",
+    "content": [
+      "Hello! I'm ChatGPT, your friendly assistant. How can I help you today?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_482c4ab5148b",
+    "role": "user",
+    "content": [
+      "Test 123, still there?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_d76154847c0c",
+    "role": "assistant",
+    "content": [
+      "Yes, I'm still here! Feel free to ask me anything or let me know how I can assist you."
+    ],
+    "interrupted": "False"
+  }
+]
