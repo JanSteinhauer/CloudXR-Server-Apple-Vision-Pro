@@ -17,6 +17,7 @@ struct TaskWindowView: View {
     let taskID: TaskID
     @EnvironmentObject private var conditionService: ExperimentConditionService
     @EnvironmentObject private var eventLog: SessionEventLog
+    @EnvironmentObject private var syncService: PrototypeSyncService
 
     var body: some View {
         // While no clone is present the views still need something to render;
@@ -44,7 +45,13 @@ struct TaskWindowView: View {
             }
         }
         // Window open/close gives the per-task dwell time for free.
-        .onAppear { eventLog.record("task_opened", task: taskID) }
-        .onDisappear { eventLog.record("task_closed", task: taskID) }
+        .onAppear {
+            eventLog.record("task_opened", task: taskID)
+            Task { await syncService.taskDidAppear(taskID) }
+        }
+        .onDisappear {
+            eventLog.record("task_closed", task: taskID)
+            Task { await syncService.taskDidDisappear(taskID) }
+        }
     }
 }

@@ -84,7 +84,45 @@ final class PrototypeSyncService: ObservableObject {
     }
     
     // MARK: - Write Operations
-    
+
+    /// Mirrors the real task-window lifecycle into Firestore. Windows opened by a
+    /// Firebase trigger are already active, so this is a no-op for that path. A
+    /// window opened locally from the master UI gets the same false-to-true event,
+    /// allowing Unity to trigger its spoken task introduction consistently.
+    func taskDidAppear(_ task: TaskID) async {
+        guard !activeTasks.contains(task) else { return }
+
+        activeTasks.insert(task)
+        lastActiveTasks = activeTasks
+
+        do {
+            try await rest.patchDocument(
+                fields: [task.id: .boolean(true)],
+                updateMask: [task.id]
+            )
+        } catch {
+            print("❌ [PrototypeSyncService] Failed to publish task appearance for \(task.id): \(error.localizedDescription)")
+        }
+    }
+
+    /// Clears a locally closed window so reopening it creates a fresh transition.
+    /// This is idempotent when Firestore or `advance` already cleared the task.
+    func taskDidDisappear(_ task: TaskID) async {
+        guard activeTasks.contains(task) else { return }
+
+        activeTasks.remove(task)
+        lastActiveTasks = activeTasks
+
+        do {
+            try await rest.patchDocument(
+                fields: [task.id: .boolean(false)],
+                updateMask: [task.id]
+            )
+        } catch {
+            print("❌ [PrototypeSyncService] Failed to clear task appearance for \(task.id): \(error.localizedDescription)")
+        }
+    }
+
     /// Moves the session on one step: clears the finished task's trigger and sets the
     /// next one.
     ///
