@@ -22,5 +22,85 @@
       "Hello! How can I assist you today?"
     ],
     "interrupted": "False"
+  },
+  {
+    "id": "item_03f82bc5dd77",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_6916409e4a75",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_d3423f5b16c4",
+    "role": "assistant",
+    "content": [
+      "Hi there! Hope you're having a great day. How can I help you today?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_b2bc1ab83a85",
+    "role": "user",
+    "content": [
+      "What is fünf plus fünf?"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_3db8acd35c79",
+    "role": "assistant",
+    "content": [
+      "Fünf plus fünf ergibt zehn."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_79763eb669a7",
+    "role": "user",
+    "content": [
+      "Okay,"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_2dc00908bc0b",
+    "role": "user",
+    "content": [
+      "Nice Outfit."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_29f8c822bbdb",
+    "role": "assistant",
+    "content": [
+      "Thank you! I"
+    ],
+    "interrupted": "True"
+  },
+  {
+    "id": "item_dae6330a2905",
+    "role": "user",
+    "content": [
+      "Săptămână"
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_4e9ddbdc4d07",
+    "role": "assistant",
+    "content": [
+      "\"Săptămână\" înseamnă \"week\" în limba română. Ai nevoie de mai multe informații despre săptămână sau despre alt subiect?"
+    ],
+    "interrupted": "False"
   }
 ]
