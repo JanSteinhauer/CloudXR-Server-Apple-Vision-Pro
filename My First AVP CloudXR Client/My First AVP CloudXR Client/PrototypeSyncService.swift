@@ -8,12 +8,19 @@
 import SwiftUI
 import Combine
 
+struct TaskLaunchSignal: Equatable {
+    let task: TaskID
+    let requestId: String
+}
+
 /// Service that polls a specific Firestore document to trigger window openings from Firebase boolean toggles
 @MainActor
 final class PrototypeSyncService: ObservableObject {
     
     @Published var activeTasks = Set<TaskID>()
+    @Published private(set) var launchSignal: TaskLaunchSignal?
     private var lastActiveTasks = Set<TaskID>()
+    private var lastLaunchRequestId = ""
 
     let rest: FirestoreREST
     private var pollTask: Task<Void, Never>?
@@ -75,6 +82,19 @@ final class PrototypeSyncService: ObservableObject {
                 newlyActive.insert(task)
             }
         }
+
+        // A launch request is edge-triggered independently of the booleans. This
+        // makes "Launch again" reliable even when a stale task flag is still true,
+        // and it cannot be missed if the initial fetch finishes before ContentView
+        // attaches its activeTasks onChange handler.
+        let requestId = scalarField(fields, key: "launchRequestId")
+        let requestedTask = stringField(fields, key: "requestedTask")
+        if !requestId.isEmpty, requestId != lastLaunchRequestId {
+            lastLaunchRequestId = requestId
+            if let task = TaskID(rawValue: requestedTask) {
+                launchSignal = TaskLaunchSignal(task: task, requestId: requestId)
+            }
+        }
         
         // Publish strictly if changed
         if newlyActive != lastActiveTasks {
@@ -96,13 +116,31 @@ final class PrototypeSyncService: ObservableObject {
         lastActiveTasks = activeTasks
 
         do {
+            let requestId = UUID().uuidString
             try await rest.patchDocument(
-                fields: [task.id: .boolean(true)],
-                updateMask: [task.id]
+                fields: [
+                    task.id: .boolean(true),
+                    "requestedTask": .string(task.id),
+                    "launchRequestId": .string(requestId),
+                ],
+                updateMask: [task.id, "requestedTask", "launchRequestId"]
             )
         } catch {
             print("❌ [PrototypeSyncService] Failed to publish task appearance for \(task.id): \(error.localizedDescription)")
         }
+    }
+
+    private func stringField(_ fields: [String: Any], key: String) -> String {
+        (fields[key] as? [String: Any])?["stringValue"] as? String ?? ""
+    }
+
+    private func scalarField(_ fields: [String: Any], key: String) -> String {
+        guard let value = fields[key] as? [String: Any] else { return "" }
+        if let string = value["stringValue"] as? String { return string }
+        if let integer = value["integerValue"] as? String { return integer }
+        if let integer = value["integerValue"] as? Int { return String(integer) }
+        if let double = value["doubleValue"] as? Double { return String(double) }
+        return ""
     }
 
     /// Clears a locally closed window so reopening it creates a fresh transition.

@@ -230,15 +230,35 @@ struct ContentView: View {
         } message: {
             Text(anchorsMessage)
         }
+        .onAppear {
+            // The first Firebase fetch can finish before this view attaches its
+            // onChange handlers. Reconcile current state once so an already-active
+            // preflight/task is never silently missed.
+            var tasksToOpen = syncService.activeTasks
+            if let signal = syncService.launchSignal {
+                tasksToOpen.insert(signal.task)
+            }
+            for task in tasksToOpen {
+                openWindow(id: "task", value: task)
+            }
+        }
         .onChange(of: syncService.activeTasks) { oldValue, newValue in
             let opened = newValue.subtracting(oldValue)
             for task in opened {
+                // Explicit requests have their own launchSignal. Avoid opening a
+                // second window when that signal and the boolean edge share a poll.
+                if task == syncService.launchSignal?.task { continue }
                 openWindow(id: "task", value: task)
             }
             
             let closed = oldValue.subtracting(newValue)
             for task in closed {
                 dismissWindow(id: "task", value: task)
+            }
+        }
+        .onChange(of: syncService.launchSignal) { _, signal in
+            if let signal {
+                openWindow(id: "task", value: signal.task)
             }
         }
     }
