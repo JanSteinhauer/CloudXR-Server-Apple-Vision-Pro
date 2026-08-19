@@ -14,36 +14,16 @@ The system is separated into two main environments:
 Because the server and client run on distinct operating systems, the setup is split into two parts:
 
 ### 1. Windows Server Setup
-1. Copy or extract the `Stream-Manager-6.0.4-win64` directory to your Windows machine (or cloud VM).
-2. **Configure OpenXR Runtime Path**: You must ensure that the OpenXR configuration points to the correct location of the `openxr_cloudxr.dll` on your Windows system.
-   *   **File to edit**: `Stream-Manager-6.0.4-win64 - Copy/Server/releases/6.0.5/openxr_cloudxr.json`
-   *   **Action**: Change the `library_path` to match the exact absolute path where the `.dll` is located on the Windows machine.
-   *   _Example Configuration:_
-       ```json
-       {
-         "file_format_version": "1.0.0",
-         "runtime": {
-           "name": "NVIDIA™ CloudXR™ Runtime (based on Monado™)",
-           "library_path": "C:\\MasterThesisJanSteinhauer\\ClaudeXR-Server-Apple-Vision-Pro\\Stream-Manager-6.0.4-win64 - Copy\\Server\\releases\\6.0.5\\openxr_cloudxr.dll"
-         }
-       }
-       ```
-3. **Launch the Server Application**: To correctly route the OpenXR traffic through CloudXR, you must launch your VR/AR application using the provided batch script (`Start_CloudXR.bat`) which sets the `XR_RUNTIME_JSON` environment variable before starting the application.
-   *   **File to edit**: `New folder/Start_CloudXR.bat` (or move it to your preferred location)
-   *   **Action**: Ensure that the `XR_RUNTIME_JSON` path within the `.bat` file points correctly to your `openxr_cloudxr.json` file. Note that we wrap the assignment in quotes `set "XR_RUNTIME_JSON=..."` to safely handle spaces in the folder path.
-   *   _Example Configuration:_
-       ```bat
-       @echo off
-       echo Setting OpenXR Runtime to NVIDIA CloudXR...
-       set "XR_RUNTIME_JSON=C:\MasterThesisJanSteinhauer\ClaudeXR-Server-Apple-Vision-Pro\Stream-Manager-6.0.4-win64 - Copy\Server\releases\6.0.5\openxr_cloudxr.json"
-       
-       echo Starting Unity Game...
-       start "" "CloudXRStreamingTest.exe"
-       
-       echo Game launched! Waiting for connection...
-       pause
-       ```
-   * Then just double-click the `Start_CloudXR.bat` to run the game!
+1. Keep `Stream-Manager-6.1.0-win64-CloudXR-6.2.1` beside the dated Unity build folders.
+2. Install the virtual audio driver as described in
+   `Stream-Manager-6.1.0-win64-CloudXR-6.2.1/MICROPHONE_SETUP.md`.
+3. Double-click the `Start_CloudXR.bat` inside the build you want to run, for example
+   `August19/Start_CloudXR.bat`.
+
+The per-build launchers call the shared repository-root `Start_CloudXR.bat`. That script
+resolves every path relative to its own location, starts Stream Manager 6.1.0 and Runtime
+6.2.1 when necessary, sets `XR_RUNTIME_JSON` to the 6.2.1 runtime, and launches the selected
+Unity executable. No machine-specific absolute paths need to be edited.
 
 ### 2. Mac Client Setup (Apple Vision Pro)
 1. Open the project folder `My First AVP CloudXR Client` in Xcode on your Mac.
