@@ -170,7 +170,8 @@ final class ParticipantSpeechService: ObservableObject {
         startGatePolling()
 
         do {
-            try beginRecognition()
+            try startEngine()
+            startRecognitionTask()
             state = .listening
             print("🗣️ [ParticipantSpeechService] Listening (\(localeIdentifier), endpoint \(endpointSilence)s).")
         } catch {
@@ -188,9 +189,71 @@ final class ParticipantSpeechService: ObservableObject {
     }
 
     // MARK: - Recognition
+    //
+    // The audio engine is started **once** and the microphone tap stays installed
+    // for the whole session; only the recognition request is swapped between
+    // utterances.
+    //
+    // Tearing the engine down after every sentence — stop, removeTap, re-read the
+    // input format, installTap, start — is what made the first sentence work and
+    // every later one silently fail: after `engine.stop()` the input node often
+    // reports a zero-sample-rate format, and a tap installed with that format
+    // delivers no audio at all, with no error anywhere.
 
-    private func beginRecognition() throws {
-        endRecognition()
+    /// Holds whichever request is current so the audio tap, which runs on a
+    /// realtime audio thread, can feed it without touching main-actor state.
+    private final class RequestBox: @unchecked Sendable {
+        private let lock = NSLock()
+        private var request: SFSpeechAudioBufferRecognitionRequest?
+
+        func set(_ next: SFSpeechAudioBufferRecognitionRequest?) {
+            lock.lock(); defer { lock.unlock() }
+            request = next
+        }
+
+        func append(_ buffer: AVAudioPCMBuffer) {
+            lock.lock(); let current = request; lock.unlock()
+            current?.append(buffer)
+        }
+
+        func endAudio() {
+            lock.lock(); let current = request; lock.unlock()
+            current?.endAudio()
+        }
+    }
+
+    private let requestBox = RequestBox()
+
+    /// Starts the engine and installs the tap. Called once per session.
+    private func startEngine() throws {
+        guard !engine.isRunning else { return }
+
+        let input = engine.inputNode
+        let format = input.outputFormat(forBus: 0)
+
+        guard format.sampleRate > 0 else {
+            throw NSError(domain: "ParticipantSpeechService", code: -2, userInfo: [
+                NSLocalizedDescriptionKey:
+                    "The microphone reported a zero sample rate. Another app may hold the audio input.",
+            ])
+        }
+
+        input.removeTap(onBus: 0)
+        input.installTap(onBus: 0, bufferSize: 1024, format: format) { [requestBox] buffer, _ in
+            requestBox.append(buffer)
+        }
+
+        engine.prepare()
+        try engine.start()
+
+        print("🎤 [ParticipantSpeechService] Audio engine running at \(Int(format.sampleRate)) Hz.")
+    }
+
+    /// Swaps in a fresh recognition request. The engine keeps running throughout,
+    /// so no audio is lost and no format has to be renegotiated.
+    private func startRecognitionTask() {
+        task?.cancel()
+        task = nil
 
         let request = SFSpeechAudioBufferRecognitionRequest()
         request.shouldReportPartialResults = true
@@ -203,52 +266,55 @@ final class ParticipantSpeechService: ObservableObject {
             print("⚠️ [ParticipantSpeechService] On-device recognition unavailable for \(localeIdentifier); " +
                   "audio would be sent to Apple for transcription. Check this before running participants.")
         }
+
         self.request = request
-
-        let input = engine.inputNode
-        let format = input.outputFormat(forBus: 0)
-        input.removeTap(onBus: 0)
-        input.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak request] buffer, _ in
-            request?.append(buffer)
-        }
-
-        engine.prepare()
-        try engine.start()
+        requestBox.set(request)
 
         task = recognizer?.recognitionTask(with: request) { [weak self] result, error in
             guard let self else { return }
             Task { @MainActor in
                 if let result {
                     self.handlePartial(result.bestTranscription.formattedString)
-                }
-                if let error {
-                    // A finished task reports an error too; only surface real ones.
-                    if self.state.isRunning {
-                        print("⚠️ [ParticipantSpeechService] recognition: \(error.localizedDescription)")
-                        self.restartSoon()
+
+                    // The recogniser decided the utterance was over. Its task is now
+                    // finished and will never report again, so a new one is needed
+                    // whether or not the silence timer has fired yet.
+                    if result.isFinal {
+                        self.rotateRecognitionTask()
+                        return
                     }
+                }
+
+                if error != nil, self.state.isRunning {
+                    // A task that has simply ended reports an error too, so this is
+                    // not necessarily a fault — rotate rather than surfacing it.
+                    self.rotateRecognitionTask()
                 }
             }
         }
     }
 
-    private func endRecognition() {
-        task?.cancel(); task = nil
-        request?.endAudio(); request = nil
-        if engine.isRunning { engine.stop() }
-        engine.inputNode.removeTap(onBus: 0)
+    /// Ends the current utterance and immediately begins the next one.
+    private func rotateRecognitionTask() {
+        guard state.isRunning else { return }
+
+        requestBox.endAudio()
+        requestBox.set(nil)
+        task?.cancel()
+        task = nil
+        request = nil
+
+        startRecognitionTask()
     }
 
-    /// The recogniser stops after each utterance or on error; a study session needs
-    /// it to simply keep going.
-    private func restartSoon() {
-        guard state.isRunning else { return }
-        Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 300_000_000)
-            guard self.state.isRunning else { return }
-            do { try self.beginRecognition() }
-            catch { self.state = .failed(error.localizedDescription) }
-        }
+    private func endRecognition() {
+        task?.cancel(); task = nil
+        requestBox.endAudio()
+        requestBox.set(nil)
+        request = nil
+
+        if engine.isRunning { engine.stop() }
+        engine.inputNode.removeTap(onBus: 0)
     }
 
     // MARK: - Endpointing
@@ -317,8 +383,9 @@ final class ParticipantSpeechService: ObservableObject {
         logUtterance(trimmed, startedAt: startedAt, reason: reason, index: requestCounter)
         sendToAgent(trimmed, requestId: requestCounter)
 
-        // The recogniser's session ends with the utterance; start a fresh one.
-        restartSoon()
+        // A recognition task is finished once its utterance is committed, so the
+        // next sentence needs a fresh one. The engine is untouched.
+        rotateRecognitionTask()
     }
 
     // MARK: - Firestore
