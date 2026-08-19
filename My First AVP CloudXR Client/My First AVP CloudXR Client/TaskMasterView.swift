@@ -14,6 +14,10 @@ struct TaskMasterView: View {
     @EnvironmentObject private var conditionService: ExperimentConditionService
     @EnvironmentObject private var eventLog: SessionEventLog
 
+    /// On, each task advances itself when the participant completes it. Off, the
+    /// experimenter paces the session by flipping triggers in Firestore.
+    @AppStorage("autoAdvanceTasks") private var autoAdvanceTasks = true
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             header
@@ -89,6 +93,9 @@ struct TaskMasterView: View {
                     .font(.caption)
                     .foregroundStyle(.orange)
             }
+
+            Toggle("Tasks advance themselves", isOn: $autoAdvanceTasks)
+                .font(.caption)
 
             if let error = eventLog.lastError {
                 Text("Last write failed: \(error)")

@@ -115,6 +115,7 @@ struct My_First_AVP_CloudXR_ClientApp: App {
                 .environment(appModel)
                 .environmentObject(conditionService)
                 .environmentObject(eventLog)
+                .environmentObject(syncService)
         }
         .defaultSize(width: 1200, height: 820)
 

@@ -61,6 +61,22 @@ enum TaskID: String, CaseIterable, Identifiable, Codable, Hashable {
         }
     }
 
+    /// The next screen in a round. Having the order in one place stops it being
+    /// implied by whichever button happens to call `openWindow`, which is how
+    /// Task 1 ended up with no way forward while the pre-flight had one.
+    /// `nil` ends the round.
+    var next: TaskID? {
+        switch self {
+        case .preflight1A: return .task1A
+        case .preflight1B: return .task1B
+        case .task1A: return .task2A
+        case .task1B: return .task2B
+        case .task2A: return .task3A
+        case .task2B: return .task3B
+        case .task3A, .task3B: return nil
+        }
+    }
+
     var systemImage: String {
         switch self {
         case .preflight1A, .preflight1B: return "laptopcomputer"

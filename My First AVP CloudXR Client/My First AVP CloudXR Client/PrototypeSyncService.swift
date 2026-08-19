@@ -32,6 +32,16 @@ final class PrototypeSyncService: ObservableObject {
     deinit {
         pollTask?.cancel()
     }
+
+    #if DEBUG
+    /// Non-polling instance for Xcode previews.
+    static var preview: PrototypeSyncService { PrototypeSyncService(preview: true) }
+
+    private init(preview: Bool) {
+        self.rest = FirestoreREST(projectId: "preview", apiKey: "preview",
+                                  documentPath: "prototype/triggers")
+    }
+    #endif
     
     // MARK: - Polling logic
     
@@ -75,6 +85,33 @@ final class PrototypeSyncService: ObservableObject {
     
     // MARK: - Write Operations
     
+    /// Moves the session on one step: clears the finished task's trigger and sets the
+    /// next one.
+    ///
+    /// The windows are also opened and dismissed directly by the caller, because a
+    /// task window may have been opened by a button rather than by a trigger (the
+    /// pre-flight does this), in which case clearing a trigger alone would leave the
+    /// old window on screen next to the new one. Writing the triggers as well keeps
+    /// the experimenter's console showing where the participant actually is.
+    func advance(from current: TaskID, to next: TaskID) async {
+        let fields: [String: FirestoreREST.FirestoreValue] = [
+            current.id: .boolean(false),
+            next.id: .boolean(true),
+        ]
+
+        // Reflect it locally first; the poll is on a two-second interval and a button
+        // press should not wait for it.
+        activeTasks.remove(current)
+        activeTasks.insert(next)
+        lastActiveTasks = activeTasks
+
+        do {
+            try await rest.patchDocument(fields: fields, updateMask: Array(fields.keys))
+        } catch {
+            print("❌ [PrototypeSyncService] Failed to advance \(current.id) -> \(next.id): \(error.localizedDescription)")
+        }
+    }
+
     /// Patches all task IDs in `prototype/triggers` to false
     func resetAllTriggers() async throws {
         var fields: [String: FirestoreREST.FirestoreValue] = [:]

@@ -14,7 +14,12 @@ struct TaskInformationSharingView: View {
     let agent: AgentType
 
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var eventLog: SessionEventLog
+    @EnvironmentObject private var syncService: PrototypeSyncService
+
+    /// Off lets the experimenter pace the session by hand from Firestore instead.
+    @AppStorage("autoAdvanceTasks") private var autoAdvanceTasks = true
 
     @State private var highlightedContextIndex: Int? = nil
     @State private var statusPanelVisible: Bool = false
@@ -175,6 +180,8 @@ struct TaskInformationSharingView: View {
             Button {
                 confirmed = true
                 eventLog.record("information_confirmed", task: taskID)
+                advance(from: taskID, autoAdvance: autoAdvanceTasks,
+                        syncService: syncService, openWindow: openWindow, dismiss: dismiss)
             } label: {
                 Label(confirmed ? "Confirmed" : "Confirm — I've got it on my radar",
                       systemImage: confirmed ? "checkmark.circle.fill" : "checkmark.circle")
@@ -277,4 +284,5 @@ struct TaskInformationSharingView: View {
 #Preview(windowStyle: .automatic) {
     TaskInformationSharingView(round: .a, agent: .managerClone)
         .environmentObject(SessionEventLog.preview)
+        .environmentObject(PrototypeSyncService.preview)
 }

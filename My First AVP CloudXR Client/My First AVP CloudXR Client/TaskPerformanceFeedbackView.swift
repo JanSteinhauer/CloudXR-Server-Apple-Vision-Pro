@@ -13,7 +13,12 @@ struct TaskPerformanceFeedbackView: View {
     let round: TaskRound
     let agent: AgentType
 
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var eventLog: SessionEventLog
+    @EnvironmentObject private var syncService: PrototypeSyncService
+
+    @AppStorage("autoAdvanceTasks") private var autoAdvanceTasks = true
 
     @State private var acknowledged: Bool = false
     @State private var shownAt: Date?
@@ -181,6 +186,8 @@ struct TaskPerformanceFeedbackView: View {
                 eventLog.record("feedback_acknowledged", task: taskID,
                                 value: goalName,
                                 detail: dwell.map { ["secondsBeforeAcknowledge": String($0)] } ?? [:])
+                advance(from: taskID, autoAdvance: autoAdvanceTasks,
+                        syncService: syncService, openWindow: openWindow, dismiss: dismiss)
             } label: {
                 Label(acknowledged ? "Feedback acknowledged" : "Acknowledge feedback",
                       systemImage: acknowledged ? "checkmark.seal.fill" : "checkmark.seal")
@@ -209,4 +216,5 @@ struct TaskPerformanceFeedbackView: View {
 #Preview(windowStyle: .automatic) {
     TaskPerformanceFeedbackView(round: .a, agent: .managerClone)
         .environmentObject(SessionEventLog.preview)
+        .environmentObject(PrototypeSyncService.preview)
 }
