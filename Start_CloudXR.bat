@@ -40,7 +40,7 @@ echo Configuring NVIDIA CloudXR Runtime 6.2.1...
 
 rem Refuse to connect the sample client to a manager from an older deployment.
 set "CLOUDXR_EXPECTED_MANAGER=%MANAGER%"
-powershell -NoProfile -Command "$expected=[IO.Path]::GetFullPath($env:CLOUDXR_EXPECTED_MANAGER); $wrong=Get-Process NvStreamManager -ErrorAction SilentlyContinue ^| Where-Object { $_.Path -and -not [String]::Equals([IO.Path]::GetFullPath($_.Path),$expected,[StringComparison]::OrdinalIgnoreCase) }; if($wrong){ $wrong ^| ForEach-Object { Write-Host ('[ERROR] Another Stream Manager is running: ' + $_.Path) }; exit 2 }; $right=Get-Process NvStreamManager -ErrorAction SilentlyContinue ^| Where-Object { $_.Path -and [String]::Equals([IO.Path]::GetFullPath($_.Path),$expected,[StringComparison]::OrdinalIgnoreCase) }; if($right){exit 0}else{exit 1}"
+powershell -NoProfile -Command "$expected=[IO.Path]::GetFullPath($env:CLOUDXR_EXPECTED_MANAGER); $all=@(Get-Process NvStreamManager -ErrorAction SilentlyContinue); $wrong=$all ^| Where-Object { $_.Path -and -not [String]::Equals([IO.Path]::GetFullPath($_.Path),$expected,[StringComparison]::OrdinalIgnoreCase) }; if($wrong){ $wrong ^| ForEach-Object { Write-Host ('[ERROR] Another Stream Manager is running: ' + $_.Path) }; exit 2 }; if($all.Count -gt 0){exit 0}else{exit 1}"
 
 if errorlevel 2 (
     echo Stop the old Stream Manager and run this launcher again.
@@ -71,4 +71,3 @@ start "" /d "%~dp1" "%UNITY_EXE%"
 
 echo Unity launched. Connect the visionOS 27 client and allow microphone access.
 pause
-

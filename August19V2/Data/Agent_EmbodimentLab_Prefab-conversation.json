@@ -1,0 +1,26 @@
+[
+  {
+    "id": "item_e8dc9370cacb",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_7021d2051130",
+    "role": "user",
+    "content": [
+      "Greet the user."
+    ],
+    "interrupted": "False"
+  },
+  {
+    "id": "item_3e59841672d9",
+    "role": "assistant",
+    "content": [
+      "Hello! How can I assist you today?"
+    ],
+    "interrupted": "False"
+  }
+]
