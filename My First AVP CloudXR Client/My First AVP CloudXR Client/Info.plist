@@ -5,7 +5,7 @@
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Your speech is transcribed on this device so the avatar can respond to what you say. No audio recording leaves the headset.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app uses the microphone so you can speak with the avatar during the study session.</string>
+	<string>This app streams microphone audio through CloudXR so you can speak with the avatar during the study session.</string>
 	<key>NSWorldSensingUsageDescription</key>
 	<string>This app uses world sensing to detect and track objects in your environment for augmented reality experiences.</string>
 	<key>NSHandsTrackingUsageDescription</key>

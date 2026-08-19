@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/NVIDIA/cloudxr-framework",
       "state" : {
-        "revision" : "7fcebcd7b93016c389f665bd0b71e0dd0037b9d6",
-        "version" : "6.0.4"
+        "revision" : "5cd43e00e6e038d64b03896b00cad53821030b20",
+        "version" : "6.2.0"
       }
     }
   ],

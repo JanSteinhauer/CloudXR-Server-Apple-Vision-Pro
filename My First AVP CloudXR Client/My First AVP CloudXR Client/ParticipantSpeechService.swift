@@ -2,22 +2,17 @@
 //  ParticipantSpeechService.swift
 //  My First AVP CloudXR Client
 //
-//  Transcribes the participant on-device and sends each finished sentence to the
-//  agent through Firestore.
+//  Legacy fallback that transcribes the participant on-device and sends each
+//  finished sentence to the agent through Firestore.
 //
-//  Why on-device transcription rather than streaming the microphone
-//  ---------------------------------------------------------------
-//  There is no way to get the Vision Pro's microphone to the server. CloudXR
-//  Runtime 6.0.5 streams audio server-to-client only — its own effective-settings
-//  dump lists exactly one audio flag, `audioStreaming`, and no upstream stream is
-//  ever created. The LiveKit Swift SDK, which would have let the headset publish
-//  into the room directly, does not support visionOS at all: neither it nor its
-//  WebRTC XCFramework declares the platform.
+//  CloudXR Framework 6.1+ and Runtime 6.2+ support upstream
+//  microphone streaming. ContentView enables that preferred path, and the
+//  Windows virtual audio driver passes it to Unity/LiveKit. Do not start this
+//  recognizer at the same time or it will contend for the microphone and submit
+//  duplicate participant utterances.
 //
-//  So the audio never leaves the headset. Speech is recognised locally, and only
-//  *text* is sent. That is also the better answer for data protection: no voice
-//  recording in transit or at rest, which keeps participant audio out of the
-//  data-management plan entirely.
+//  Retain this service only as a CloudXR 6.0.x fallback. In that mode the audio
+//  never leaves the headset: speech is recognised locally and only text is sent.
 //
 //  Flow
 //  ----

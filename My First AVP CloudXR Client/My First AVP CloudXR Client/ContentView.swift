@@ -18,7 +18,6 @@ struct ContentView: View {
     @Environment(\.openWindow) var openWindow
     @Environment(\.dismissWindow) var dismissWindow
     @EnvironmentObject var syncService: PrototypeSyncService
-    @EnvironmentObject var speechService: ParticipantSpeechService
 
     // Configurable session settings.
     @AppStorage("ipAddress") static var ipAddress: String = ""
@@ -35,6 +34,8 @@ struct ContentView: View {
     @State private var isLoadingAnchors = false
     @State private var showAnchorsAlert = false
     @State private var anchorsMessage = ""
+    @State private var cloudXRMicEnabled = false
+    @State private var cloudXRSessionConnected = false
 
     var body: some View {
         VStack {
@@ -90,7 +91,7 @@ struct ContentView: View {
 
                                 if !token.isEmpty {
                                     config.connectionType = .localSecure(
-                                        ip: "192.168.137.1",
+                                        ip: ContentView.ipAddress,
                                         clientToken: token,
                                         certificateValidationHandler: { challenge in
                                             // Automatically trust the self-signed cert from the VM
@@ -102,7 +103,7 @@ struct ContentView: View {
                                     )
                                 } else {
                                     // Fallback to basic local connection without token
-                                    config.connectionType = .local(ip: "192.168.137.1")
+                                    config.connectionType = .local(ip: ContentView.ipAddress)
                                     print("⚠️ Using local connection without secure token")
                                 }
 
@@ -119,16 +120,19 @@ struct ContentView: View {
 
                                 // Connect!
                                 try await cxrSession.connect()
+                                cloudXRSessionConnected = true
+
+                                // Framework 6.1+ publishes the Vision Pro microphone
+                                // through CloudXR Runtime 6.2+. This must be enabled
+                                // after the streaming session is connected.
+                                cxrSession.setMicEnabled(true)
+                                cloudXRMicEnabled = cxrSession.isMicEnabled
 
                                 await openImmersiveSpace(id: streamingSpaceTitle)
-
-                                // The participant's voice cannot reach the server as audio,
-                                // so it is transcribed here and sent as text.
-                                await speechService.start()
                             }
                         }.padding()
 
-            speechRow
+            cloudXRMicrophoneRow
                 .padding(.horizontal)
 
             HStack(spacing: 20) {
@@ -232,73 +236,27 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Speech status
+    // MARK: - CloudXR microphone
 
-    /// The experimenter has to be able to see that the participant is being heard.
-    /// A dead recogniser is indistinguishable from a quiet participant otherwise,
-    /// and by the time you notice, the session is spent.
-    private var speechRow: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 12) {
-                Image(systemName: icon)
-                    .foregroundStyle(tint)
+    private var cloudXRMicrophoneRow: some View {
+        HStack(spacing: 12) {
+            Image(systemName: cloudXRMicEnabled ? "mic.fill" : "mic.slash")
+                .foregroundStyle(cloudXRMicEnabled ? Color.green : Color.secondary)
 
-                Text(speechService.state.label)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            Text(cloudXRMicEnabled
+                 ? "Vision Pro microphone streaming through CloudXR"
+                 : "CloudXR microphone is muted")
+                .font(.caption)
+                .foregroundStyle(.secondary)
 
-                Text("· \(speechService.committedCount) sent")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+            Spacer()
 
-                Spacer()
-
-                if speechService.state.isRunning {
-                    Button("Send now") { speechService.commitNow() }
-                        .controlSize(.small)
-                        .disabled(speechService.partialText.isEmpty)
-                    Button("Stop") { speechService.stop() }
-                        .controlSize(.small)
-                } else {
-                    Button("Start listening") {
-                        Task { await speechService.start() }
-                    }
-                    .controlSize(.small)
-                }
+            Button(cloudXRMicEnabled ? "Mute" : "Unmute") {
+                cxrSession.setMicEnabled(!cloudXRMicEnabled)
+                cloudXRMicEnabled = cxrSession.isMicEnabled
             }
-
-            // Live partial transcript — the fastest way to see whether recognition
-            // is actually working and roughly how accurate it is.
-            if !speechService.partialText.isEmpty {
-                Text("“\(speechService.partialText)”")
-                    .font(.caption)
-                    .italic()
-                    .lineLimit(2)
-                    .foregroundStyle(.primary)
-            } else if !speechService.lastCommitted.isEmpty {
-                Text("last: “\(speechService.lastCommitted)”")
-                    .font(.caption2)
-                    .lineLimit(1)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    private var icon: String {
-        switch speechService.state {
-        case .listening: return "waveform"
-        case .gated: return "pause.circle"
-        case .failed, .unavailable: return "exclamationmark.triangle"
-        default: return "waveform.slash"
-        }
-    }
-
-    private var tint: Color {
-        switch speechService.state {
-        case .listening: return .green
-        case .gated: return .orange
-        case .failed, .unavailable: return .red
-        default: return .secondary
+            .controlSize(.small)
+            .disabled(!cloudXRSessionConnected)
         }
     }
 
