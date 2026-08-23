@@ -13,6 +13,7 @@ struct TaskMasterView: View {
     @Environment(\.openWindow) private var openWindow
     @EnvironmentObject private var conditionService: ExperimentConditionService
     @EnvironmentObject private var eventLog: SessionEventLog
+    @EnvironmentObject private var work: SessionWork
 
     /// On, each task advances itself when the participant completes it. Off, the
     /// experimenter paces the session by flipping triggers in Firestore.
@@ -31,6 +32,10 @@ struct TaskMasterView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 8)
 
+            roundSection
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+
             Divider().padding(.vertical, 8)
 
             tasksHeader
@@ -39,9 +44,9 @@ struct TaskMasterView: View {
             ScrollView {
                 VStack(spacing: 10) {
                     taskGroup(title: "Round A · Joule Tickets",
-                              tasks: [.preflight1A, .task1A, .task2A, .task3A])
+                              tasks: [.brief1A, .work1A, .review1A])
                     taskGroup(title: "Round B · Meeting Summaries",
-                              tasks: [.preflight1B, .task1B, .task2B, .task3B])
+                              tasks: [.brief1B, .work1B, .review1B])
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 24)
@@ -151,6 +156,65 @@ struct TaskMasterView: View {
         }
     }
 
+    // MARK: - Round in progress
+
+    /// What the participant has done so far, and which critique the review will
+    /// deliver as a result. Worth having in front of the experimenter: the review
+    /// branch is chosen by behaviour, so it cannot be known in advance, and it is
+    /// the thing to note down if the spoken line has to be corrected by hand.
+    private var roundSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Round in progress", systemImage: "figure.walk.motion")
+                .font(.headline)
+
+            if work.accepted.isEmpty {
+                Text("Nothing taken yet. Open a brief to start a round.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                HStack(spacing: 10) {
+                    pill(work.round.badge, tint: .blue)
+                    pill("\(work.handling.count)/\(work.accepted.count) handled", tint: .secondary)
+                    pill("\(work.opened.intersection(Set(work.accepted)).count) opened", tint: .secondary)
+                    if work.consultCount > 0 { pill("\(work.consultCount) asked", tint: .secondary) }
+                    Spacer()
+                }
+
+                HStack(spacing: 8) {
+                    Text("Review will land on")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    pill(branchLabel, tint: branchTint)
+                }
+            }
+        }
+    }
+
+    private var branchLabel: String {
+        switch work.branch {
+        case .shortcut: return "the shortcut"
+        case .missed:   return "the missed detail"
+        case .thorough: return "pace"
+        }
+    }
+
+    private var branchTint: Color {
+        switch work.branch {
+        case .shortcut: return .red
+        case .missed:   return .orange
+        case .thorough: return .green
+        }
+    }
+
+    private func pill(_ text: String, tint: Color) -> some View {
+        Text(text)
+            .font(.caption.weight(.semibold))
+            .monospacedDigit()
+            .foregroundStyle(tint)
+            .padding(.horizontal, 8).padding(.vertical, 3)
+            .background(Capsule().fill(tint.opacity(0.14)))
+    }
+
     // MARK: - Tasks list
 
     private var tasksHeader: some View {
@@ -189,7 +253,7 @@ struct TaskMasterView: View {
                     .foregroundStyle(.tint)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Task \(task.shortLabel) · \(task.title)")
+                    Text(task.title)
                         .font(.headline)
                     Text(task.subtitle)
                         .font(.caption)
@@ -213,4 +277,5 @@ struct TaskMasterView: View {
         .environment(AppModel())
         .environmentObject(ExperimentConditionService.preview())
         .environmentObject(SessionEventLog.preview)
+        .environmentObject(SessionWork.preview)
 }

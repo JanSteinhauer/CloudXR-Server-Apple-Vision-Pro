@@ -25,6 +25,7 @@ struct My_First_AVP_CloudXR_ClientApp: App {
     @StateObject private var conditionService: ExperimentConditionService
     @StateObject private var eventLog: SessionEventLog
     @StateObject private var speechService: ParticipantSpeechService
+    @StateObject private var sessionWork: SessionWork
 
     init() {
         CloudXRKit.registerSystems()
@@ -68,9 +69,19 @@ struct My_First_AVP_CloudXR_ClientApp: App {
             conditionService: condition
         )
 
+        // Carries the participant's own decisions from the brief, through the
+        // work, into the review. Nothing downstream of a decision used to depend
+        // on that decision; this is the object that makes it.
+        let work = SessionWork(
+            projectId: resolvedProjectId,
+            apiKey: resolvedApiKey
+        )
+        work.eventLog = log
+
         _conditionService = StateObject(wrappedValue: condition)
         _eventLog = StateObject(wrappedValue: log)
         _speechService = StateObject(wrappedValue: speech)
+        _sessionWork = StateObject(wrappedValue: work)
     }
 
     var body: some Scene {
@@ -107,15 +118,17 @@ struct My_First_AVP_CloudXR_ClientApp: App {
                 .environment(appModel)
                 .environmentObject(conditionService)
                 .environmentObject(eventLog)
+                .environmentObject(sessionWork)
         }
         .defaultSize(width: 480, height: 720)
 
         WindowGroup(id: "task", for: TaskID.self) { $taskID in
-            TaskWindowView(taskID: taskID ?? .task1A)
+            TaskWindowView(taskID: taskID ?? .brief1A)
                 .environment(appModel)
                 .environmentObject(conditionService)
                 .environmentObject(eventLog)
                 .environmentObject(syncService)
+                .environmentObject(sessionWork)
         }
         .defaultSize(width: 1200, height: 820)
 

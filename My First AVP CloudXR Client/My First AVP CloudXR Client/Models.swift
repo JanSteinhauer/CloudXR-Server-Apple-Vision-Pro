@@ -1,6 +1,6 @@
 //
 //  Models.swift
-//  AppleVisionProTaskPrototype
+//  My First AVP CloudXR Client
 //
 //  Shared types: task identifiers and agent type for the
 //  Manager-Clone vs Generic-Agent counterbalance.
@@ -10,79 +10,78 @@ import SwiftUI
 
 // MARK: - Task identifier
 
+/// One round is three moves: the agent briefs, the participant works, the agent
+/// reviews. Each move consumes what the one before it produced.
+///
+/// This replaced a four-screen sequence (pre-flight → inform → critique →
+/// advise) whose screens only claimed to be connected: the work happened before
+/// the agent existed, and every screen after it displayed fixed strings. The
+/// order here is the real dependency order — a review cannot run before the work
+/// it is about.
 enum TaskID: String, CaseIterable, Identifiable, Codable, Hashable {
-    case preflight1A, preflight1B
-    case task1A, task1B
-    case task2A, task2B
-    case task3A, task3B
+    case brief1A, brief1B
+    case work1A, work1B
+    case review1A, review1B
 
     var id: String { rawValue }
 
     var shortLabel: String {
         switch self {
-        case .preflight1A: return "PF-1A"
-        case .preflight1B: return "PF-1B"
-        case .task1A: return "1A"
-        case .task1B: return "1B"
-        case .task2A: return "2A"
-        case .task2B: return "2B"
-        case .task3A: return "3A"
-        case .task3B: return "3B"
+        case .brief1A:  return "B·A"
+        case .brief1B:  return "B·B"
+        case .work1A:   return "W·A"
+        case .work1B:   return "W·B"
+        case .review1A: return "R·A"
+        case .review1B: return "R·B"
         }
     }
 
     var title: String {
         switch self {
-        case .preflight1A: return "Pre-flight Task — Round A"
-        case .preflight1B: return "Pre-flight Task — Round B"
-        case .task1A: return "Information Sharing — Round A"
-        case .task1B: return "Information Sharing — Round B"
-        case .task2A: return "Performance Feedback — Round A"
-        case .task2B: return "Performance Feedback — Round B"
-        case .task3A: return "Advisory — Round A"
-        case .task3B: return "Advisory — Round B"
+        case .brief1A, .brief1B:   return "Brief — the agent assigns"
+        case .work1A, .work1B:     return "Work — the participant handles it"
+        case .review1A, .review1B: return "Review — the agent reacts"
         }
     }
 
-    /// Shown in the master window. Kept purely descriptive: the earlier labels
-    /// ("High stakes", "Bulk-delete instruction") gave away the design of every
-    /// episode, and the master window lives in the same shared space as the
-    /// participant's task windows.
+    /// Shown in the master window, which shares a space with the participant's
+    /// own windows — so it stays descriptive and gives nothing away.
     var subtitle: String {
         switch self {
-        case .preflight1A: return "Route tickets on laptop UI"
-        case .preflight1B: return "Review summaries on laptop UI"
-        case .task1A: return "Joule Tickets"
-        case .task1B: return "Meeting Summaries"
-        case .task2A: return "Goal review · Attention to Detail"
-        case .task2B: return "Goal review · Quality Standards"
-        case .task3A: return "Ticket queue"
-        case .task3B: return "Summary approval queue"
+        case .brief1A:  return "Six tickets · take three"
+        case .brief1B:  return "Six summaries · take three"
+        case .work1A:   return "Route the three taken"
+        case .work1B:   return "Review the three taken"
+        case .review1A: return "Goal review · Attention to Detail"
+        case .review1B: return "Goal review · Quality Standards"
         }
     }
 
-    /// The next screen in a round. Having the order in one place stops it being
-    /// implied by whichever button happens to call `openWindow`, which is how
-    /// Task 1 ended up with no way forward while the pre-flight had one.
-    /// `nil` ends the round.
+    var round: TaskRound {
+        switch self {
+        case .brief1A, .work1A, .review1A: return .a
+        case .brief1B, .work1B, .review1B: return .b
+        }
+    }
+
+    /// The next screen in a round. Keeping the order in one place is what stopped
+    /// it being implied by whichever button happened to call `openWindow`.
+    /// `nil` ends the round — the questionnaire comes next, off-headset.
     var next: TaskID? {
         switch self {
-        case .preflight1A: return .task1A
-        case .preflight1B: return .task1B
-        case .task1A: return .task2A
-        case .task1B: return .task2B
-        case .task2A: return .task3A
-        case .task2B: return .task3B
-        case .task3A, .task3B: return nil
+        case .brief1A:  return .work1A
+        case .brief1B:  return .work1B
+        case .work1A:   return .review1A
+        case .work1B:   return .review1B
+        case .review1A, .review1B: return nil
         }
     }
 
     var systemImage: String {
         switch self {
-        case .preflight1A, .preflight1B: return "laptopcomputer"
-        case .task1A, .task1B: return "tray.full"
-        case .task2A, .task2B: return "person.crop.circle.badge.exclamationmark"
-        case .task3A, .task3B: return "lightbulb"
+        case .brief1A, .brief1B:   return "person.wave.2"
+        case .work1A, .work1B:     return "tray.full"
+        case .review1A, .review1B: return "person.crop.circle.badge.exclamationmark"
         }
     }
 }
@@ -112,6 +111,30 @@ enum TaskRound {
         switch self {
         case .a: return "Round A"
         case .b: return "Round B"
+        }
+    }
+
+    /// The development goal the review is framed against.
+    var goalName: String {
+        switch self {
+        case .a: return "Attention to Detail"
+        case .b: return "Quality Standards"
+        }
+    }
+
+    var competency: String {
+        switch self {
+        case .a: return "Contextual Analysis"
+        case .b: return "Substantive Review"
+        }
+    }
+
+    /// The operating constraint the agent states in the brief and refers back to
+    /// in the review.
+    var constraint: String {
+        switch self {
+        case .a: return "IT service desk — system update in progress. Resolution +24 h today."
+        case .b: return "Compliance — early audit. The archive locks at 16:00 today."
         }
     }
 }

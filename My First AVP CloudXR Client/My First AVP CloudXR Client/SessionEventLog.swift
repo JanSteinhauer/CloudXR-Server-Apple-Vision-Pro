@@ -118,9 +118,6 @@ final class SessionEventLog: ObservableObject {
 extension TaskID {
     /// "A" / "B" — the parallel task version, for the counterbalance.
     var roundLabel: String {
-        switch self {
-        case .preflight1A, .task1A, .task2A, .task3A: return "A"
-        case .preflight1B, .task1B, .task2B, .task3B: return "B"
-        }
+        round == .a ? "A" : "B"
     }
 }

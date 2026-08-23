@@ -188,6 +188,24 @@ final class PrototypeSyncService: ObservableObject {
         }
     }
 
+    /// Tells the Unity server which of the three critiques the review should use.
+    ///
+    /// The branch is decided by what the participant did, so only the headset
+    /// knows it. It rides on the same document as the triggers and must be
+    /// written *before* the review trigger flips — otherwise the agent resolves
+    /// its line against a stale value and criticises the wrong thing, which is
+    /// the failure this whole rework exists to remove.
+    func setReviewBranch(_ branch: String) async {
+        do {
+            try await rest.patchDocument(
+                fields: ["reviewBranch": .string(branch)],
+                updateMask: ["reviewBranch"]
+            )
+        } catch {
+            print("❌ [PrototypeSyncService] Failed to publish review branch '\(branch)': \(error.localizedDescription)")
+        }
+    }
+
     /// Patches all task IDs in `prototype/triggers` to false
     func resetAllTriggers() async throws {
         var fields: [String: FirestoreREST.FirestoreValue] = [:]

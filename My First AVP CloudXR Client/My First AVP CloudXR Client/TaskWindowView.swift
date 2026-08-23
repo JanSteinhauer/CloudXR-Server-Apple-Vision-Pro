@@ -3,7 +3,7 @@
 //  My First AVP CloudXR Client
 //
 //  Dispatcher view for the task WindowGroup. Receives a TaskID
-//  and renders the matching task view.
+//  and renders the matching move.
 //
 //  The agent shown comes from ExperimentConditionService — i.e. from the same
 //  Firestore document the Unity server obeys — not from a picker held locally
@@ -18,6 +18,7 @@ struct TaskWindowView: View {
     @EnvironmentObject private var conditionService: ExperimentConditionService
     @EnvironmentObject private var eventLog: SessionEventLog
     @EnvironmentObject private var syncService: PrototypeSyncService
+    @EnvironmentObject private var work: SessionWork
 
     var body: some View {
         // While no clone is present the views still need something to render;
@@ -26,25 +27,15 @@ struct TaskWindowView: View {
 
         Group {
             switch taskID {
-            case .preflight1A:
-                PreflightTaskView(round: .a)
-            case .preflight1B:
-                PreflightTaskView(round: .b)
-            case .task1A:
-                TaskInformationSharingView(round: .a, agent: agent)
-            case .task1B:
-                TaskInformationSharingView(round: .b, agent: agent)
-            case .task2A:
-                TaskPerformanceFeedbackView(round: .a, agent: agent)
-            case .task2B:
-                TaskPerformanceFeedbackView(round: .b, agent: agent)
-            case .task3A:
-                TaskAdvisoryView(round: .a, agent: agent)
-            case .task3B:
-                TaskAdvisoryView(round: .b, agent: agent)
+            case .brief1A:  TaskBriefView(round: .a, agent: agent)
+            case .brief1B:  TaskBriefView(round: .b, agent: agent)
+            case .work1A:   TaskWorkView(round: .a, agent: agent)
+            case .work1B:   TaskWorkView(round: .b, agent: agent)
+            case .review1A: TaskReviewView(round: .a, agent: agent)
+            case .review1B: TaskReviewView(round: .b, agent: agent)
             }
         }
-        // Window open/close gives the per-task dwell time for free.
+        // Window open/close gives the per-move dwell time for free.
         .onAppear {
             eventLog.record("task_opened", task: taskID)
             Task { await syncService.taskDidAppear(taskID) }

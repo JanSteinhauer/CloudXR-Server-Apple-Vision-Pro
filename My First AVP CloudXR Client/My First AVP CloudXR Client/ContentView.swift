@@ -233,7 +233,7 @@ struct ContentView: View {
         .onAppear {
             // The first Firebase fetch can finish before this view attaches its
             // onChange handlers. Reconcile current state once so an already-active
-            // preflight/task is never silently missed.
+            // move is never silently missed.
             var tasksToOpen = syncService.activeTasks
             if let signal = syncService.launchSignal {
                 tasksToOpen.insert(signal.task)
