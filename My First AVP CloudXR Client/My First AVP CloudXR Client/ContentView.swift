@@ -150,6 +150,18 @@ struct ContentView: View {
                     }
                 }
 
+                // Opens the window directly, without going near Firestore. The
+                // web-driven path has three places to fail - the write, the poll,
+                // the trigger mapping - and this has none of them, so it separates
+                // "the window plumbing is broken" from "the trigger never arrived".
+                //
+                // Deliberately does not call resetAllTriggers the way the Prototype
+                // button does: clearing the document here would fight whatever the
+                // control website has just set.
+                Button("Brief A") {
+                    openWindow(id: "task", value: TaskID.brief1A)
+                }
+
                 Button("Open Firebase Queries") {
                     openWindow(id: "queries")
                 }
