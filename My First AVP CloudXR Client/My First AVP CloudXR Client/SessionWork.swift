@@ -135,11 +135,60 @@ final class SessionWork: ObservableObject {
         }
     }
 
-    var branch: Branch {
+    /// The branch this session's behaviour alone would produce.
+    var observedBranch: Branch {
         if usedShortcut { return .shortcut }
         // The assigned item is always in the three, so this is never a guess
         // about an item the participant did not touch.
         return assignedHandledWell ? .thorough : .missed
+    }
+
+    /// What the review actually delivers.
+    ///
+    /// H5 compares the two agents delivering *identical* feedback, and the branch
+    /// is derived from behaviour - which H2 and H7 predict will differ between the
+    /// conditions. Recomputing it per session therefore hands the clone and the
+    /// generic agent different critiques, and any difference in perceived abuse is
+    /// then confounded with what was said rather than who said it.
+    ///
+    /// So the participant's first session fixes the branch and their second reads
+    /// it back. Both critiques come out word for word identical while staying
+    /// grounded in something that participant actually did, which is the property
+    /// the three branches exist to preserve.
+    var branch: Branch {
+        lockedBranch ?? observedBranch
+    }
+
+    // MARK: - Holding the critique constant across a participant's two sessions
+
+    /// Keyed on the participant id from the master window, so typing a new one
+    /// starts a fresh lock. There is nothing to remember to reset between
+    /// participants, which matters because forgetting would silently carry one
+    /// person's critique into the next person's session.
+    private var branchLockKey: String {
+        let id = (eventLog?.participantId ?? "").trimmingCharacters(in: .whitespaces)
+        return "MasterThesis.reviewBranch." + (id.isEmpty ? "unidentified" : id)
+    }
+
+    /// The branch this participant's first session settled on, if they have run one.
+    var lockedBranch: Branch? {
+        UserDefaults.standard.string(forKey: branchLockKey).flatMap(Branch.init(rawValue:))
+    }
+
+    /// Fixes the branch at the moment the work is submitted - the point at which
+    /// the participant's behaviour is complete and the critique becomes decidable.
+    /// Later sessions read the stored value instead of recomputing it.
+    @discardableResult
+    func lockBranch() -> Branch {
+        if let locked = lockedBranch { return locked }
+        let chosen = observedBranch
+        UserDefaults.standard.set(chosen.rawValue, forKey: branchLockKey)
+        return chosen
+    }
+
+    /// Only for a participant who has to restart before their first review.
+    func clearBranchLock() {
+        UserDefaults.standard.removeObject(forKey: branchLockKey)
     }
 
     // MARK: - Move 1 · Brief
@@ -220,14 +269,25 @@ final class SessionWork: ObservableObject {
 
     func finishWork() {
         workFinishedAt = Date()
+
+        // Both are logged, not just the one that gets spoken. If they diverge, the
+        // second session's behaviour differed from the first and the delivered
+        // critique no longer matches what this participant just did - which is
+        // worth knowing when reading their H5 ratings, and is exactly the covariate
+        // to enter if it happens often.
+        let delivered = lockBranch()
+        let observed = observedBranch
+
         eventLog?.record("work_submitted",
                          task: round == .a ? .work1A : .work1B,
-                         value: branch.rawValue,
+                         value: delivered.rawValue,
                          detail: [
                             "seconds": String(workSeconds),
                             "usedShortcut": usedShortcut ? "true" : "false",
                             "openedCount": String(opened.intersection(Set(accepted)).count),
                             "consults": String(consultCount),
+                            "observedBranch": observed.rawValue,
+                            "branchSource": delivered == observed ? "this_session" : "first_session",
                             "handling": accepted
                                 .map { "\($0)=\(handling[$0]?.rawValue ?? "none")" }
                                 .joined(separator: " "),
