@@ -19,7 +19,7 @@ struct ContentView: View {
     @EnvironmentObject var syncService: PrototypeSyncService
 
     // Configurable session settings.
-    @AppStorage("ipAddress") static var ipAddress: String = "192.168.137.1"
+    @AppStorage("ipAddress") static var ipAddress: String = "34.118.79.176"
     @AppStorage("resolutionPreset") private var resolutionPreset: ResolutionPreset = .standardPreset
     /// Off by default: a study session never needs the participant's hands. They
     /// speak to the avatar, and the task windows are native visionOS windows driven

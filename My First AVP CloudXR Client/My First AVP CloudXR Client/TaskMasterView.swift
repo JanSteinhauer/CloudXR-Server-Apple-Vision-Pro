@@ -89,7 +89,7 @@ struct TaskMasterView: View {
 
                 Label("\(eventLog.writtenCount)", systemImage: "square.and.arrow.up")
                     .font(.caption)
-                    .foregroundStyle(eventLog.lastError == nil ? .secondary : .red)
+                    .foregroundStyle(eventLog.lastError == nil ? .secondary : Color.red)
                     .help("Events written this session")
             }
 
