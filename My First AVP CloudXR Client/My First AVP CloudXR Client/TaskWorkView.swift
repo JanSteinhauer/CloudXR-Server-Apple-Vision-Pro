@@ -251,16 +251,6 @@ struct TaskWorkView: View {
 
     private var footer: some View {
         HStack(spacing: 16) {
-            Button {
-                work.recordConsult()
-                eventLog.record("followup_requested", task: taskID)
-            } label: {
-                Label("Ask the agent", systemImage: "mic.fill")
-                    .padding(.vertical, 6)
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
-
             Spacer()
 
             Text("\(work.handling.count) of \(work.accepted.count) handled")
