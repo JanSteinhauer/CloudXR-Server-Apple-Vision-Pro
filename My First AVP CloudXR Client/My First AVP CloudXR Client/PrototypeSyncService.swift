@@ -21,6 +21,7 @@ final class PrototypeSyncService: ObservableObject {
     @Published private(set) var launchSignal: TaskLaunchSignal?
     private var lastActiveTasks = Set<TaskID>()
     private var lastLaunchRequestId = ""
+    private var isFirstFetch = true
 
     let rest: FirestoreREST
     private var pollTask: Task<Void, Never>?
@@ -89,7 +90,11 @@ final class PrototypeSyncService: ObservableObject {
         // attaches its activeTasks onChange handler.
         let requestId = scalarField(fields, key: "launchRequestId")
         let requestedTask = stringField(fields, key: "requestedTask")
-        if !requestId.isEmpty, requestId != lastLaunchRequestId {
+        
+        if isFirstFetch {
+            lastLaunchRequestId = requestId
+            isFirstFetch = false
+        } else if !requestId.isEmpty, requestId != lastLaunchRequestId {
             lastLaunchRequestId = requestId
             if let task = TaskID(rawValue: requestedTask) {
                 launchSignal = TaskLaunchSignal(task: task, requestId: requestId)
