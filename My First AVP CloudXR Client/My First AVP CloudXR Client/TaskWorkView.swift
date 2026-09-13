@@ -34,6 +34,13 @@ struct TaskWorkView: View {
     @AppStorage("autoAdvanceTasks") private var autoAdvanceTasks = true
 
     @State private var submitted = false
+    @State private var editingItem: WorkItem?
+
+    private static let editOptions = [
+        "Tighten wording",
+        "Add missing context",
+        "Soften the tone"
+    ]
 
     private var taskID: TaskID { round == .a ? .work1A : .work1B }
 
@@ -58,6 +65,51 @@ struct TaskWorkView: View {
         }
         .background(.regularMaterial)
         .onAppear { work.startWork() }
+        .sheet(item: $editingItem) { item in
+            editSheet(for: item)
+        }
+    }
+
+    // MARK: - Edit sheet
+
+    private func editSheet(for item: WorkItem) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Edit review")
+                    .font(.title3.weight(.semibold))
+                Text(item.title)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            Text("Pick an edit to apply:")
+                .font(.callout)
+
+            VStack(spacing: 8) {
+                ForEach(Self.editOptions, id: \.self) { option in
+                    Button {
+                        work.apply(.edited, to: item, editNote: option)
+                        editingItem = nil
+                    } label: {
+                        Text(option)
+                            .foregroundStyle(.black)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 4)
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+
+            HStack {
+                Spacer()
+                Button("Cancel") {
+                    editingItem = nil
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .padding(24)
+        .frame(minWidth: 460)
     }
 
     // MARK: - Header
@@ -198,10 +250,15 @@ struct TaskWorkView: View {
             HStack(spacing: 10) {
                 ForEach([Handling.approved, .edited, .rejected], id: \.self) { decision in
                     Button {
-                        work.apply(decision, to: item)
+                        if decision == .edited {
+                            editingItem = item
+                        } else {
+                            work.apply(decision, to: item)
+                        }
                     } label: {
                         Text(decision.rawValue.capitalized)
                             .frame(minWidth: 78)
+                            .foregroundStyle(.black)
                     }
                     .buttonStyle(.bordered)
                     .tint(decided == decision ? Color.accentColor : Color.secondary)
@@ -209,6 +266,14 @@ struct TaskWorkView: View {
                     .disabled(submitted)
                 }
                 Spacer()
+                if decided == .edited, let note = work.editNotes[item.id], !note.isEmpty {
+                    Text("Edit: \(note)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .frame(maxWidth: 260, alignment: .trailing)
+                }
             }
         }
     }

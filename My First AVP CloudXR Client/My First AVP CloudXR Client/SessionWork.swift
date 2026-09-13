@@ -61,6 +61,9 @@ final class SessionWork: ObservableObject {
     /// Queue chosen, round A only.
     @Published private(set) var queue: [String: String] = [:]
 
+    /// Edit rationale entered when a review is marked `.edited`, round B only.
+    @Published private(set) var editNotes: [String: String] = [:]
+
     /// Items whose detail was actually opened. The difference between looking
     /// and not looking is the whole measure in Move 2.
     @Published private(set) var opened: Set<String> = []
@@ -196,15 +199,17 @@ final class SessionWork: ObservableObject {
                          detail: ["hasBuriedDetail": item.buriedDetail == nil ? "false" : "true"])
     }
 
-    func apply(_ action: Handling, to item: WorkItem, queue chosenQueue: String? = nil) {
+    func apply(_ action: Handling, to item: WorkItem, queue chosenQueue: String? = nil, editNote: String? = nil) {
         handling[item.id] = action
         if let chosenQueue { queue[item.id] = chosenQueue }
+        if let editNote, action == .edited { editNotes[item.id] = editNote }
 
         eventLog?.record("item_handled",
                          task: round == .a ? .work1A : .work1B,
                          value: "\(item.id):\(action.rawValue)",
                          detail: [
                             "queue": chosenQueue ?? "",
+                            "editNote": editNote ?? "",
                             "openedFirst": opened.contains(item.id) ? "true" : "false",
                             "assigned": item.isAssigned ? "true" : "false",
                             "shortcutEligible": item.shortcutEligible ? "true" : "false",
