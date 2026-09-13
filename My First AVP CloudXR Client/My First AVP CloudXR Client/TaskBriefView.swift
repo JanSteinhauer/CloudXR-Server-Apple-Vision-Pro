@@ -74,8 +74,10 @@ struct TaskBriefView: View {
 
     private var header: some View {
         HStack {
-            Image(systemName: "person.wave.2")
-                .font(.title2)
+            Image("JouleLogo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 28, height: 28)
             VStack(alignment: .leading) {
                 Text(round == .a ? "SAP Joule · Ticket Triage" : "SAP Joule · Summary Review")
                     .font(.title2.weight(.semibold))
@@ -101,14 +103,11 @@ struct TaskBriefView: View {
             Image(systemName: round == .a ? "wrench.and.screwdriver" : "checkmark.shield")
                 .font(.title2)
                 .foregroundStyle(.orange)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(round == .a ? "IT Service Desk — system update in progress" : "Compliance — early audit archival")
+            VStack(alignment: .leading, spacing: 5) {
+                Text(round == .a 
+                     ? "Pick your top 3 tasks for the day so the user knows what to do" 
+                     : "Choose three summaries to clear before the requirements lock. The version sync was already assigned to you in the field of compliance and early audit archival.")
                     .font(.headline)
-                Text(round == .a
-                     ? "Ticket resolution times +24 h today."
-                     : "All summaries lock at 16:00 today.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
             }
             Spacer()
         }
@@ -217,17 +216,6 @@ struct TaskBriefView: View {
 
     private var footer: some View {
         HStack(spacing: 16) {
-            Button {
-                work.recordConsult()
-                eventLog.record("followup_requested", task: taskID)
-            } label: {
-                Label("Ask before I start", systemImage: "mic.fill")
-                    .padding(.vertical, 6)
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
-            .help("Speak to the agent. Whether the participant asks anything at all is itself a measure.")
-
             Spacer()
 
             Text(work.selectionComplete
@@ -263,7 +251,7 @@ struct TaskBriefView: View {
             .padding(.horizontal, 10).padding(.vertical, 4)
             .background(Capsule().fill(color.opacity(0.2)))
             .overlay(Capsule().stroke(color.opacity(0.5), lineWidth: 1))
-            .foregroundStyle(color)
+            .foregroundStyle(.white)
     }
 }
 

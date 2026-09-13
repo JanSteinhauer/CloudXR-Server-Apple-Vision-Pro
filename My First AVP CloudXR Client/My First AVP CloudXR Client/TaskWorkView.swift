@@ -64,8 +64,10 @@ struct TaskWorkView: View {
 
     private var header: some View {
         HStack {
-            Image(systemName: "tray.full")
-                .font(.title2)
+            Image("JouleLogo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 28, height: 28)
             VStack(alignment: .leading) {
                 Text(round == .a ? "SAP Joule · Your queue" : "SAP Joule · Your review list")
                     .font(.title2.weight(.semibold))

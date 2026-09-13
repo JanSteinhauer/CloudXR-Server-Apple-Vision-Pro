@@ -64,9 +64,10 @@ struct TaskReviewView: View {
 
     private var header: some View {
         HStack {
-            Image(systemName: "person.crop.circle.badge.exclamationmark")
-                .font(.title2)
-                .foregroundStyle(.orange)
+            Image("JouleLogo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 28, height: 28)
             VStack(alignment: .leading) {
                 Text("SAP Performance Development · Q2 Goal Review")
                     .font(.title2.weight(.semibold))
